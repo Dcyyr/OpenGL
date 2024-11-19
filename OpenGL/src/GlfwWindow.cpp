@@ -29,6 +29,20 @@ int main(void)
     {
         return -1;
     }
+
+    float vertices[] = {
+        -0.5f,-0.5f,0.0f,
+         0.5f,-0.5f,0.0f,
+         0.0f, 0.5f,0.0f
+    };
+
+    uint32_t vb;
+    glCreateBuffers(1, &vb);
+    glBindBuffer(GL_ARRAY_BUFFER, vb);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
+    glEnableVertexAttribArray(0);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -36,6 +50,7 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

@@ -25,7 +25,7 @@ workspace "OpenGL"
 
 	
 	group "Core-OpenGL"
-	project "OpenGL"
+	    project "OpenGL"
 		location "OpenGL"
 		kind "ConsoleApp"
 
@@ -34,7 +34,7 @@ workspace "OpenGL"
 		staticruntime "on"
 
 		targetdir("bin/" .. outputdir .. "/%{prj.name}")
-		objdir("bin-int" .. outputdir .. "/%{prj.name}")
+		objdir("bin-int/" .. outputdir .. "/%{prj.name}")
 
 		files
 		{
