@@ -1,2 +1,7 @@
-﻿  GlfwWindow.cpp
+﻿  Buffers.cpp
+  Application.cpp
+  Shader.cpp
+D:\dev\OpenGL\OpenGL\src\OpenGLRender\Shader.cpp(11,2): warning C4002: too many arguments for function-like macro invocation 'assert'
+D:\dev\OpenGL\OpenGL\src\OpenGLRender\Shader.cpp(50,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+  Generating Code...
   OpenGL.vcxproj -> D:\dev\OpenGL\bin\Debug-windows-x86_64\OpenGL\OpenGL.exe

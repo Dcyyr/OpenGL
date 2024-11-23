@@ -1,1 +1,3 @@
-D:\dev\OpenGL\OpenGL\src\GlfwWindow.cpp;D:\dev\OpenGL\bin-int\Debug-windows-x86_64\OpenGL\GlfwWindow.obj
+D:\dev\OpenGL\OpenGL\src\OpenGLRender\Buffers.cpp;D:\dev\OpenGL\bin-int\Debug-windows-x86_64\OpenGL\Buffers.obj
+D:\dev\OpenGL\OpenGL\src\Core\Application.cpp;D:\dev\OpenGL\bin-int\Debug-windows-x86_64\OpenGL\Application.obj
+D:\dev\OpenGL\OpenGL\src\OpenGLRender\Shader.cpp;D:\dev\OpenGL\bin-int\Debug-windows-x86_64\OpenGL\Shader.obj
