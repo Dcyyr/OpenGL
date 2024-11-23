@@ -23,6 +23,7 @@ Shader::Shader(const std::string& filepath)
 Shader::Shader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
 	:m_Name(name)
 {
+	
 	std::unordered_map<GLenum, std::string> sources;
 	sources[GL_VERTEX_SHADER] = vertexSource;
 	sources[GL_FRAGMENT_SHADER] = fragmentSource;
@@ -81,6 +82,7 @@ std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& so
 
 void Shader::Compile(std::unordered_map<GLenum,std::string>& shaderSources)
 {
+	
 	GLuint program = glCreateProgram();
 	std::array<GLenum, 2> glShaderIDs;
 	int glShaderIDIndex = 0;
@@ -108,7 +110,6 @@ void Shader::Compile(std::unordered_map<GLenum,std::string>& shaderSources)
 
 			glDeleteShader(shader);
 
-		
 			break;
 		}
 
@@ -144,6 +145,7 @@ void Shader::Compile(std::unordered_map<GLenum,std::string>& shaderSources)
 
 	for (auto id : glShaderIDs)
 		glDetachShader(program, id);
+	
 
 }
 

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 #include <imgui.h>
+
 #include "OpenGLRender/Buffers.h"
 #include "OpenGLRender/Shader.h"
 
@@ -35,15 +36,16 @@ int main()
         return -1;
     }
 
-    glm::vec4 color = glm::vec4(0.2f, 0.3f, 0.8f, 1.0f);
+    glm::vec4 color = glm::vec4(0.9f,0.2f,0.8f,1.0f);
     Shader shader("shader/Shader.glsl");
+    shader.Bind();
     shader.SetFloat4("u_Color", color);
 
     float vertices[] = {
-        -0.5f,-0.5f,0.0f,//左下
-         0.5f,-0.5f,0.0f,//右下
-         0.5f, 0.5f,0.0f,//右上
-        -0.5f, 0.5f,0.0f //左上
+         0.5f, -0.5f, 0.0f,   // bottom right
+        -0.5f, -0.5f, 0.0f,   // bottom left
+         0.0f,  0.5f, 0.0f    // top 
+          
     };
 
     uint32_t indices[] = {
@@ -52,17 +54,22 @@ int main()
     };
    
     uint32_t vao;
-    glGenVertexArrays(1, &vao);
+    glCreateVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
-    VertexBuffer vb(vertices, 4 * 3 * sizeof(float));
+    VertexBuffer vb(vertices, 3 * 3 * sizeof(float));
     IndexBuffer ib(indices, 6);
+
     //位置
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     //颜色属性
-    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3*sizeof(float)));
-    //glEnableVertexAttribArray(1);
+   /* glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(1);*/
+
+    vb.Unbind();
+    ib.Unbind();
+    shader.Unbind();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -72,11 +79,13 @@ int main()
         glClearColor(0.3f, 0.4f, 0.5f, 1.0f);
         
         shader.Bind();
+        shader.SetFloat4("u_Color",color);
+
         glBindVertexArray(vao);
-       
-      
-        //glDrawArrays(GL_TRIANGLES, 0, 3);//画一个三角形
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);//画一个四边形
+        
+ 
+        glDrawArrays(GL_TRIANGLES, 0, 3);//画一个三角形
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);//画一个四边形
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINE线框，GL_FILL恢复默认
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -86,7 +95,7 @@ int main()
     }
 
     glDeleteVertexArrays(1, &vao);
-    shader.Unbind();
+    
 
     glfwTerminate();
     return 0;
