@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "glad/glad.h"
+#include "Core/Debug.h"
 
 class VertexBuffer
 {

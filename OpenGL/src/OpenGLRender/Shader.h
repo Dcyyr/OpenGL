@@ -5,6 +5,8 @@
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Core/Debug.h"
+
 typedef unsigned int GLenum;
 
 class Shader

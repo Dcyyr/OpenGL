@@ -15,6 +15,7 @@ workspace "OpenGL"
 	IncludeDir["GLAD"]  = "OpenGL/vendor/GLAD/include"
 	IncludeDir["ImGui"] = "OpenGL/vendor/imgui"
 	IncludeDir["glm"]   = "OpenGL/vendor/glm"
+	IncludeDir["stb_image"] = "OpenGL/vendor/stb_image"
 
 
 	group "Dependencies"
@@ -39,7 +40,10 @@ workspace "OpenGL"
 		files
 		{
 			"%{prj.name}/src/**.h",
-			"%{prj.name}/src/**.cpp"
+			"%{prj.name}/src/**.cpp",
+			"%{prj.name}/vendor/stb_image/**.cpp",
+			"%{prj.name}/vendor/stb_image/**.h",
+
 		}
 
 		includedirs
@@ -48,7 +52,8 @@ workspace "OpenGL"
 			"%{prj.name}/vendor/GLFW/include",
 			"%{IncludeDir.GLAD}",
 			"%{IncludeDir.ImGui}",
-			"%{IncludeDir.glm}"
+			"%{IncludeDir.glm}",
+			"%{IncludeDir.stb_image}"
 		}
 
 		links

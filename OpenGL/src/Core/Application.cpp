@@ -3,10 +3,14 @@
 #include <iostream>
 #include <glm/glm.hpp>
 #include <imgui.h>
+#include <stb_image.h>
+
 
 #include "OpenGLRender/Buffers.h"
 #include "OpenGLRender/Shader.h"
-
+#include "OpenGLRender/Texture2D.h"
+#include "OpenGLRender/VertexArray.h"
+#include "OpenGLRender/Renderer.h"
 
 int main()
 {
@@ -36,15 +40,14 @@ int main()
         return -1;
     }
 
-    glm::vec4 color = glm::vec4(0.9f,0.2f,0.8f,1.0f);
-    Shader shader("shader/Shader.glsl");
-    shader.Bind();
-    shader.SetFloat4("u_Color", color);
+   
 
     float vertices[] = {
-         0.5f, -0.5f, 0.0f,   // bottom right
-        -0.5f, -0.5f, 0.0f,   // bottom left
-         0.0f,  0.5f, 0.0f    // top 
+        0.5f,  0.5f, 1.0f,1.0f,                 // 右上角
+        0.5f, -0.5f, 1.0f,0.0f,                  // 右下角
+       -0.5f, -0.5f, 0.0f,0.0f,                   // 左下角
+       -0.5f,  0.5f, 0.0f,1.0f                   // 左上角
+           
           
     };
 
@@ -53,39 +56,50 @@ int main()
         2,3,0 //second
     };
    
-    uint32_t vao;
-    glCreateVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    VertexArray va;
+    VertexBuffer vb(vertices, 4 * 4 * sizeof(float));
+    
+    VertexBufferLayout layout;
+    layout.Push<float>(2);
+    layout.Push<float>(2);
+    va.AddVertexBuffer(vb, layout);
 
-    VertexBuffer vb(vertices, 3 * 3 * sizeof(float));
     IndexBuffer ib(indices, 6);
 
-    //位置
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    glm::vec4 color = glm::vec4(0.9f, 0.5f, 0.8f, 1.0f);
+    Shader shader("res/shader/Shader.glsl");
+    shader.Bind();
+    shader.SetFloat4("u_Color", color);
+
+    Texture2D tex("res/texture/1.jpg");
+    tex.Bind();
+    shader.SetInt("u_Texture", 0);
     //颜色属性
    /* glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3*sizeof(float)));
     glEnableVertexAttribArray(1);*/
 
+    
     vb.Unbind();
     ib.Unbind();
     shader.Unbind();
+    va.Unbind();
+
+    Renderer render;
+
 
     while (!glfwWindowShouldClose(window))
     {
         
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(0.3f, 0.4f, 0.5f, 1.0f);
+        render.Clear();
         
         shader.Bind();
         shader.SetFloat4("u_Color",color);
 
-        glBindVertexArray(vao);
-        
- 
-        glDrawArrays(GL_TRIANGLES, 0, 3);//画一个三角形
-        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);//画一个四边形
+        va.Bind();
+        ib.Bind();
+        //glDrawArrays(GL_TRIANGLES, 0, 3);//画一个三角形
+        render.Draw(vb,ib,shader);
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINE线框，GL_FILL恢复默认
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -94,8 +108,6 @@ int main()
         glfwPollEvents();
     }
 
-    glDeleteVertexArrays(1, &vao);
-    
 
     glfwTerminate();
     return 0;
