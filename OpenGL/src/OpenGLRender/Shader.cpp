@@ -159,7 +159,7 @@ void Shader::Unbind() const
 	glUseProgram(0);
 }
 
-void Shader::SetInt(const std::string& name,int value)
+void Shader::SetUniformInt(const std::string& name,int value)
 {
 	GLint location = glGetUniformLocation(m_RendererID, name.c_str());//获取全局变量uniform在glsl里的值，和名字
 	glUniform1i(location, value); //设置uniform值
@@ -167,31 +167,31 @@ void Shader::SetInt(const std::string& name,int value)
 	//因为它是在当前激活的着色器程序中设置uniform的。
 }
 
-void Shader::SetFloat(const std::string& name, float value)
+void Shader::SetUniformFloat(const std::string& name, float value)
 {
 	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 	glUniform1f(location, value);
 }
 
-void Shader::SetFloat3(const std::string& name, const glm::vec3& value)
+void Shader::SetUniformFloat3(const std::string& name, const glm::vec3& value)
 {
 	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 	glUniform3f(location, value.x, value.y,value.z);
 }
 
-void Shader::SetFloat4(const std::string& name, const glm::vec4& value)
+void Shader::SetUniformFloat4(const std::string& name, const glm::vec4& value)
 {
 	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 	glUniform4f(location, value.x, value.y, value.z,value.w);
 }
 
-void Shader::SetMat4(const std::string& name, const glm::mat4& matrix)
+void Shader::SetUniformMat4(const std::string& name, const glm::mat4& matrix)
 {
 	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
-void Shader::SetBool(const std::string& name, bool value)
+void Shader::SetUniformBool(const std::string& name, bool value)
 {
 	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 	glUniform1i(location, (int)value);
