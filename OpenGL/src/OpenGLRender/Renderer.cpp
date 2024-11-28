@@ -11,6 +11,6 @@ void Renderer::Draw(const VertexBuffer& vb, const IndexBuffer& ib, const Shader&
 
 void Renderer::Clear() const
 {
-	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(0.3f, 0.4f, 0.5f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

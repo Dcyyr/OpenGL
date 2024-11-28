@@ -5,11 +5,12 @@ layout (location = 1) in vec2 a_TexCoord;
 
 out vec2 v_TexCoord;
 
-uniform mat4 transform;
+uniform mat4 mvp;
+
 
 void main()
 {
-    gl_Position = transform* a_Pos;
+    gl_Position = mvp* a_Pos;
     v_TexCoord = a_TexCoord;
     
 }

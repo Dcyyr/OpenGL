@@ -18,9 +18,11 @@ int main()
 {
 
     glfwInit();
-   
 
-    GLFWwindow* window = glfwCreateWindow(1600, 900, "OpenGL", NULL, NULL);
+    uint32_t width = 1600;
+    uint32_t height = 900;
+
+    GLFWwindow* window = glfwCreateWindow(width, height, "OpenGL", NULL, NULL);
     glfwMakeContextCurrent(window);
 
     if (!window)
@@ -41,12 +43,50 @@ int main()
         return -1;
     }
    
+    glEnable(GL_DEPTH_TEST);
 
     float vertices[] = {
-        0.5f,  0.5f, 1.0f,1.0f,                 // 右上角
-        0.5f, -0.5f, 1.0f,0.0f,                 // 右下角
-       -0.5f, -0.5f, 0.0f,0.0f,                 // 左下角
-       -0.5f,  0.5f, 0.0f,1.0f                  // 左上角
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
            
           
     };
@@ -56,11 +96,13 @@ int main()
         2,3,0 //second
     };
    
+   
+
     VertexArray va;
-    VertexBuffer vb(vertices, 4 * 4 * sizeof(float));
+    VertexBuffer vb(vertices, sizeof(vertices));
     
     VertexBufferLayout layout;
-    layout.Push<float>(2);//glVertexAttribPointer
+    layout.Push<float>(3);//glVertexAttribPointer
     layout.Push<float>(2);
     va.AddVertexBuffer(vb, layout);
 
@@ -96,16 +138,23 @@ int main()
         shader.Bind();
         shader.SetUniformFloat4("u_Color",color);
 
-        glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, 0.0f));
-        transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(1.0f, 1.0f, 1.0f));
+        //transform
+        glm::mat4 model      = glm::mat4(1.0f);
+        glm::mat4 view       = glm::mat4(1.0f);
+        glm::mat4 projection = glm::mat4(1.0f);
+        model = glm::rotate(model, (float)glfwGetTime()* glm::radians(45.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+        view = glm::translate(view, glm::vec3(0.0f,0.0f,-3.0f));
+        projection = glm::perspective(glm::radians(45.0f),(float)width/(float)height,0.1f,100.0f);
+        glm::mat4 mvp = projection * view * model;
 
-        shader.SetUniformMat4("transform",transform);
+        shader.SetUniformMat4("mvp", mvp);
+       
 
         va.Bind();
         ib.Bind();
-        //glDrawArrays(GL_TRIANGLES, 0, 3);//画一个三角形
-        render.Draw(vb,ib,shader);
+
+        glDrawArrays(GL_TRIANGLES, 0, 36);//画一个三角形
+        //render.Draw(vb,ib,shader);
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINE线框，GL_FILL恢复默认
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
