@@ -34,6 +34,7 @@
     <ClInclude Include="src\OpenGLRender\VertexArray.h" />
     <ClInclude Include="src\OpenGLRender\VertexBufferLayout.h" />
     <ClInclude Include="src\OpenGLRender\Renderer.h" />
+    <ClInclude Include="src\OpenGLRender\OrthoCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -52,5 +53,6 @@
     <ClCompile Include="src\Core\Debug.cpp" />
     <ClCompile Include="src\OpenGLRender\VertexArray.cpp" />
     <ClCompile Include="src\OpenGLRender\Renderer.cpp" />
+    <ClCompile Include="src\OpenGLRender\OrthoCamera.cpp" />
   </ItemGroup>
 </Project>

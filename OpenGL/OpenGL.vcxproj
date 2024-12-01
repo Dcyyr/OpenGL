@@ -90,6 +90,7 @@
   <ItemGroup>
     <ClInclude Include="src\Core\Debug.h" />
     <ClInclude Include="src\OpenGLRender\Buffers.h" />
+    <ClInclude Include="src\OpenGLRender\OrthoCamera.h" />
     <ClInclude Include="src\OpenGLRender\Renderer.h" />
     <ClInclude Include="src\OpenGLRender\Shader.h" />
     <ClInclude Include="src\OpenGLRender\Texture2D.h" />
@@ -101,6 +102,7 @@
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Debug.cpp" />
     <ClCompile Include="src\OpenGLRender\Buffers.cpp" />
+    <ClCompile Include="src\OpenGLRender\OrthoCamera.cpp" />
     <ClCompile Include="src\OpenGLRender\Renderer.cpp" />
     <ClCompile Include="src\OpenGLRender\Shader.cpp" />
     <ClCompile Include="src\OpenGLRender\Texture2D.cpp" />
