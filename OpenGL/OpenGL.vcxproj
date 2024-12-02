@@ -90,7 +90,7 @@
   <ItemGroup>
     <ClInclude Include="src\Core\Debug.h" />
     <ClInclude Include="src\OpenGLRender\Buffers.h" />
-    <ClInclude Include="src\OpenGLRender\OrthoCamera.h" />
+    <ClInclude Include="src\OpenGLRender\Camera.h" />
     <ClInclude Include="src\OpenGLRender\Renderer.h" />
     <ClInclude Include="src\OpenGLRender\Shader.h" />
     <ClInclude Include="src\OpenGLRender\Texture2D.h" />
@@ -102,7 +102,7 @@
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Debug.cpp" />
     <ClCompile Include="src\OpenGLRender\Buffers.cpp" />
-    <ClCompile Include="src\OpenGLRender\OrthoCamera.cpp" />
+    <ClCompile Include="src\OpenGLRender\Camera.cpp" />
     <ClCompile Include="src\OpenGLRender\Renderer.cpp" />
     <ClCompile Include="src\OpenGLRender\Shader.cpp" />
     <ClCompile Include="src\OpenGLRender\Texture2D.cpp" />
@@ -119,6 +119,10 @@
     <ProjectReference Include="vendor\ImGui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shader\LightCubeShader.shader" />
+    <None Include="res\shader\LightShader.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
