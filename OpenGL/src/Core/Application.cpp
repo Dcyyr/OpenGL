@@ -30,7 +30,7 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-glm::vec3 lightPos(1.8f,0.6f,-2.0f);
+glm::vec3 LightPos(1.2f, 1.0f, 2.0f);
 
 int main()
 {
@@ -69,47 +69,47 @@ int main()
 
     float vertices[] = {
 
-    -0.5f, -0.5f, -0.5f,    
-     0.5f, -0.5f, -0.5f,    
-     0.5f,  0.5f, -0.5f,    
-     0.5f,  0.5f, -0.5f,    
-    -0.5f,  0.5f, -0.5f,    
-    -0.5f, -0.5f, -0.5f,    
-                            
-    -0.5f, -0.5f,  0.5f,    
-     0.5f, -0.5f,  0.5f,    
-     0.5f,  0.5f,  0.5f,    
-     0.5f,  0.5f,  0.5f,    
-    -0.5f,  0.5f,  0.5f,    
-    -0.5f, -0.5f,  0.5f,    
-                            
-    -0.5f,  0.5f,  0.5f,    
-    -0.5f,  0.5f, -0.5f,    
-    -0.5f, -0.5f, -0.5f,    
-    -0.5f, -0.5f, -0.5f,    
-    -0.5f, -0.5f,  0.5f,    
-    -0.5f,  0.5f,  0.5f,    
-                            
-     0.5f,  0.5f,  0.5f,    
-     0.5f,  0.5f, -0.5f,    
-     0.5f, -0.5f, -0.5f,    
-     0.5f, -0.5f, -0.5f,    
-     0.5f, -0.5f,  0.5f,    
-     0.5f,  0.5f,  0.5f,    
-                            
-    -0.5f, -0.5f, -0.5f,    
-     0.5f, -0.5f, -0.5f,    
-     0.5f, -0.5f,  0.5f,    
-     0.5f, -0.5f,  0.5f,    
-    -0.5f, -0.5f,  0.5f,    
-    -0.5f, -0.5f, -0.5f,    
-                            
-    -0.5f,  0.5f, -0.5f,    
-     0.5f,  0.5f, -0.5f,    
-     0.5f,  0.5f,  0.5f,    
-     0.5f,  0.5f,  0.5f,    
-    -0.5f,  0.5f,  0.5f,    
-    -0.5f,  0.5f, -0.5f    
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
          
     };
 
@@ -122,6 +122,7 @@ int main()
     va.Bind();
     VertexBufferLayout layout1;
     layout1.Push<float>(3);
+    layout1.Push<float>(3);
     va.AddVertexBuffer(vb, layout1);
 
 
@@ -130,6 +131,7 @@ int main()
 
     vb.Bind();
     VertexBufferLayout layout2;
+    layout2.Push<float>(3);
     layout2.Push<float>(3);
     Lightva.AddVertexBuffer(vb, layout2);
 
@@ -157,6 +159,9 @@ int main()
         lightShader.Bind();
         lightShader.SetUniformFloat3("ObjectColor",glm::vec3(1.0f,0.5f,0.31f));
         lightShader.SetUniformFloat3("LightColor", glm::vec3(1.0f,1.0f,1.0f));
+        lightShader.SetUniformFloat3("LightPos", LightPos);
+        lightShader.SetUniformFloat3("ViewPos", camera.m_Position);
+
         glm::mat4 view = camera.GetViewMatrix();
         lightShader.SetUniformMat4("view", view);
 
@@ -173,7 +178,7 @@ int main()
         lightCubeshader.SetUniformMat4("projection", projection);
         lightCubeshader.SetUniformMat4("view", view);
         model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
+        model = glm::translate(model, LightPos);
         model = glm::scale(model, glm::vec3(0.3f));
         lightCubeshader.SetUniformMat4("model", model);
 
@@ -210,6 +215,8 @@ void Input(GLFWwindow* window)
         camera.CameraInput(CameraMoveDirection::LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.CameraInput(CameraMoveDirection::RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+        camera.CameraInput(CameraMoveDirection::UP, deltaTime);
 }
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)

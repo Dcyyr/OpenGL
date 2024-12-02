@@ -6,7 +6,7 @@
 
 enum class CameraMoveDirection
 {
-	FORWARD = 0, BACKWARD, LEFT, RIGHT
+	FORWARD = 0, BACKWARD, LEFT, RIGHT, UP, DOWN
 };
 
 const float c_Yaw        = -90.0f;//Æ«º½½Ç
