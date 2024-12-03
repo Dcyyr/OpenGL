@@ -30,7 +30,7 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-glm::vec3 LightPos(1.2f, 1.0f, 2.0f);
+glm::vec3 LightPos(0.0f, 0.2f, 2.0f);
 
 int main()
 {
@@ -116,6 +116,7 @@ int main()
     Shader lightShader("res/shader/LightShader.shader");
     Shader lightCubeshader("res/shader/LightCubeShader.shader");
 
+    //正方体1
     VertexArray va;
     VertexBuffer vb(vertices,sizeof(vertices));
     
@@ -125,7 +126,7 @@ int main()
     layout1.Push<float>(3);
     va.AddVertexBuffer(vb, layout1);
 
-
+    //正方体2
     VertexArray Lightva;
     Lightva.Bind();
 
@@ -157,10 +158,19 @@ int main()
 
         //
         lightShader.Bind();
-        lightShader.SetUniformFloat3("ObjectColor",glm::vec3(1.0f,0.5f,0.31f));
-        lightShader.SetUniformFloat3("LightColor", glm::vec3(1.0f,1.0f,1.0f));
+        //lightShader.SetUniformFloat3("ObjectColor",glm::vec3(1.0f,0.5f,0.31f));
+        //lightShader.SetUniformFloat3("LightColor", glm::vec3(1.0f,1.0f,1.0f));
         lightShader.SetUniformFloat3("LightPos", LightPos);
         lightShader.SetUniformFloat3("ViewPos", camera.m_Position);
+        lightShader.SetUniformFloat3("materials.ambient", glm::vec3(1.0f,0.5f,0.31f));
+        lightShader.SetUniformFloat3("materials.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+        lightShader.SetUniformFloat3("materials.specular",glm::vec3(0.5f,0.5f,0.5f));
+        lightShader.SetUniformFloat("materials.shininess", 0.4 * 128);
+
+
+        lightShader.SetUniformFloat3("light.ambient", glm::vec3(0.19225, 0.19225, 0.19225));
+        lightShader.SetUniformFloat3("light.diffuse", glm::vec3(0.50754, 0.50754, 0.50754));
+        lightShader.SetUniformFloat3("light.specular", glm::vec3(0.508273, 0.508273, 0.508273));
 
         glm::mat4 view = camera.GetViewMatrix();
         lightShader.SetUniformMat4("view", view);
@@ -179,7 +189,7 @@ int main()
         lightCubeshader.SetUniformMat4("view", view);
         model = glm::mat4(1.0f);
         model = glm::translate(model, LightPos);
-        model = glm::scale(model, glm::vec3(0.3f));
+        model = glm::scale(model, glm::vec3(0.1f));
         lightCubeshader.SetUniformMat4("model", model);
 
         Lightva.Bind();
