@@ -142,7 +142,8 @@ void Shader::Compile(std::unordered_map<GLenum,std::string>& shaderSources)
 
 		return;
 	}	
-
+	for (auto id : glShaderIDs)
+		glDetachShader(program, id);
 }
 
 void Shader::Bind() const
