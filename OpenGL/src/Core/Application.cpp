@@ -114,6 +114,19 @@ int main()
 
     };
 
+    glm::vec3 cubePositions[] = {
+      glm::vec3(0.0f,  0.0f,  0.0f),
+      glm::vec3(2.0f,  5.0f, -15.0f),
+      glm::vec3(-1.5f, -2.2f, -2.5f),
+      glm::vec3(-3.8f, -2.0f, -12.3f),
+      glm::vec3(2.4f, -0.4f, -3.5f),
+      glm::vec3(-1.7f,  3.0f, -7.5f),
+      glm::vec3(1.3f, -2.0f, -2.5f),
+      glm::vec3(1.5f,  2.0f, -2.5f),
+      glm::vec3(1.5f,  0.2f, -1.5f),
+      glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+
     Shader lightShader("res/shader/LightShader.shader");
     Shader lightCubeshader("res/shader/LightCubeShader.shader");
 
@@ -169,14 +182,20 @@ int main()
         lightShader.Bind();
         lightShader.SetUniformFloat3("light.position", LightPos);
         lightShader.SetUniformFloat3("viewPos", camera.m_Position);
-
-
-        //lightShader.SetUniformFloat3("material.specular",glm::vec3(0.5f,0.5f,0.5f));
+        lightShader.SetUniformFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+        lightShader.SetUniformFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
+        lightShader.SetUniformFloat3("light.direction", camera.m_Front);
+        //material属性
         lightShader.SetUniformFloat("material.shininess", 64);
 
+        //light属性
         lightShader.SetUniformFloat3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-        lightShader.SetUniformFloat3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+        lightShader.SetUniformFloat3("light.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
         lightShader.SetUniformFloat3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        lightShader.SetUniformFloat("light.constant", 1.0f);
+        lightShader.SetUniformFloat("light.linear", 0.09f);
+        lightShader.SetUniformFloat("light.quadratic",0.032f);
+
 
         glm::mat4 view = camera.GetViewMatrix();
         lightShader.SetUniformMat4("view", view);
@@ -190,10 +209,21 @@ int main()
         tex.Bind();
         tex2.Bind(1);
         va.Bind();
-        glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        //
-        lightCubeshader.Bind();
+        for (uint32_t i = 0; i < 10; i++)
+        {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            lightShader.SetUniformMat4("model", model);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+
+
+        //光源矩形
+      /*  lightCubeshader.Bind();
         lightCubeshader.SetUniformMat4("projection", projection);
         lightCubeshader.SetUniformMat4("view", view);
         model = glm::mat4(1.0f);
@@ -203,7 +233,7 @@ int main()
 
 
         Lightva.Bind();
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_TRIANGLES, 0, 36);*/
 
 
         //glm::mat4 mvp = projection * view * model;
@@ -237,6 +267,8 @@ void Input(GLFWwindow* window)
         camera.CameraInput(CameraMoveDirection::RIGHT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
         camera.CameraInput(CameraMoveDirection::UP, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        camera.CameraInput(CameraMoveDirection::DOWN, deltaTime);
 }
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)

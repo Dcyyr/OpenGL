@@ -39,6 +39,8 @@ void Camera::CameraInput(CameraMoveDirection direction, float ts)
 		m_Position += Speed * m_Right;
 	if (direction == CameraMoveDirection::UP)
 		m_Position += Speed * m_Up;
+	if (direction == CameraMoveDirection::DOWN)
+		m_Position -= Speed * m_Up;
 }
 
 void Camera::MouseMovement(float xoffset, float yoffset, bool constrainPitch)
