@@ -30,7 +30,7 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-glm::vec3 LightPos(0.0f, 0.6f, 1.8f);
+glm::vec3 LightPos(1.2f, 1.0f, 2.0f);
 
 int main()
 {
@@ -127,6 +127,13 @@ int main()
       glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
+    glm::vec3 pointLightPositions[] = {
+       glm::vec3(0.7f,  0.2f,  2.0f),
+       glm::vec3(2.3f, -3.3f, -4.0f),
+       glm::vec3(-4.0f,  2.0f, -12.0f),
+       glm::vec3(0.0f,  0.0f, -3.0f)
+    };
+
     Shader lightShader("res/shader/LightShader.shader");
     Shader lightCubeshader("res/shader/LightCubeShader.shader");
 
@@ -162,14 +169,12 @@ int main()
     Lightva.Unbind();
     Renderer render;
 
-    lightShader.Bind();
-    lightShader.SetUniformInt("material.diffuse", 0);
-    lightShader.SetUniformInt("material.specular", 1);
+   
 
     while (!glfwWindowShouldClose(window))
     {
     
-        double currentFrame = static_cast<float>(glfwGetTime());
+        float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
@@ -178,23 +183,63 @@ int main()
         /* Render here */
         render.Clear();
 
+        //texture
+        lightShader.Bind();
+        lightShader.SetUniformInt("material.diffuse", 0);
+        lightShader.SetUniformInt("material.specular", 1);
         //
         lightShader.Bind();
-        lightShader.SetUniformFloat3("light.position", LightPos);
         lightShader.SetUniformFloat3("viewPos", camera.m_Position);
-        lightShader.SetUniformFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
-        lightShader.SetUniformFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
-        lightShader.SetUniformFloat3("light.direction", camera.m_Front);
-        //material属性
-        lightShader.SetUniformFloat("material.shininess", 64);
+        lightShader.SetUniformFloat("material.shininess",32.0f);
 
-        //light属性
-        lightShader.SetUniformFloat3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-        lightShader.SetUniformFloat3("light.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
-        lightShader.SetUniformFloat3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-        lightShader.SetUniformFloat("light.constant", 1.0f);
-        lightShader.SetUniformFloat("light.linear", 0.09f);
-        lightShader.SetUniformFloat("light.quadratic",0.032f);
+        // directional light
+        lightShader.SetUniformFloat3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+        lightShader.SetUniformFloat3("dirLight.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        lightShader.SetUniformFloat3("dirLight.diffuse", glm::vec3(0.4f, 0.4f, 0.4f));
+        lightShader.SetUniformFloat3("dirLight.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+        // point light 1
+        lightShader.SetUniformFloat3("pointLights[0].position", pointLightPositions[0]);
+        lightShader.SetUniformFloat3("pointLights[0].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        lightShader.SetUniformFloat3("pointLights[0].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+        lightShader.SetUniformFloat3("pointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        lightShader.SetUniformFloat("pointLights[0].constant", 1.0f);
+        lightShader.SetUniformFloat("pointLights[0].linear", 0.09f);
+        lightShader.SetUniformFloat("pointLights[0].quadratic", 0.032f);
+        // point light 2
+        lightShader.SetUniformFloat3("pointLights[1].position", pointLightPositions[1]);
+        lightShader.SetUniformFloat3("pointLights[1].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        lightShader.SetUniformFloat3("pointLights[1].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+        lightShader.SetUniformFloat3("pointLights[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        lightShader.SetUniformFloat("pointLights[1].constant", 1.0f);
+        lightShader.SetUniformFloat("pointLights[1].linear", 0.09f);
+        lightShader.SetUniformFloat("pointLights[1].quadratic", 0.032f);
+        // point light 3
+        lightShader.SetUniformFloat3("pointLights[2].position", pointLightPositions[2]);
+        lightShader.SetUniformFloat3("pointLights[2].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        lightShader.SetUniformFloat3("pointLights[2].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+        lightShader.SetUniformFloat3("pointLights[2].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        lightShader.SetUniformFloat("pointLights[2].constant", 1.0f);
+        lightShader.SetUniformFloat("pointLights[2].linear", 0.09f);
+        lightShader.SetUniformFloat("pointLights[2].quadratic", 0.032f);
+        // point light 4
+        lightShader.SetUniformFloat3("pointLights[3].position", pointLightPositions[3]);
+        lightShader.SetUniformFloat3("pointLights[3].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        lightShader.SetUniformFloat3("pointLights[3].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+        lightShader.SetUniformFloat3("pointLights[3].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        lightShader.SetUniformFloat("pointLights[3].constant", 1.0f);
+        lightShader.SetUniformFloat("pointLights[3].linear", 0.09f);
+        lightShader.SetUniformFloat("pointLights[3].quadratic", 0.032f);
+        // spotLight
+        lightShader.SetUniformFloat3("spotLight.position", camera.m_Position);
+        lightShader.SetUniformFloat3("spotLight.direction", camera.m_Front);
+        lightShader.SetUniformFloat3("spotLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+        lightShader.SetUniformFloat3("spotLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+        lightShader.SetUniformFloat3("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        lightShader.SetUniformFloat("spotLight.constant", 1.0f);
+        lightShader.SetUniformFloat("spotLight.linear", 0.09f);
+        lightShader.SetUniformFloat("spotLight.quadratic", 0.032f);
+        lightShader.SetUniformFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+        lightShader.SetUniformFloat("spotLight.outerCutOff", glm::cos(glm::radians(17.0f)));
 
 
         glm::mat4 view = camera.GetViewMatrix();
@@ -202,9 +247,7 @@ int main()
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.m_Zoom), (float)width / (float)height, 0.1f, 100.0f);
         lightShader.SetUniformMat4("projection", projection);
-       
-        glm::mat4 model = glm::mat4(1.0f);
-        lightShader.SetUniformMat4("model", model);
+    
 
         tex.Bind();
         tex2.Bind(1);
@@ -223,19 +266,21 @@ int main()
 
 
         //光源矩形
-      /*  lightCubeshader.Bind();
+        lightCubeshader.Bind();
         lightCubeshader.SetUniformMat4("projection", projection);
         lightCubeshader.SetUniformMat4("view", view);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, LightPos);
-        model = glm::scale(model, glm::vec3(0.1f));
-        lightCubeshader.SetUniformMat4("model", model);
-
-
         Lightva.Bind();
-        glDrawArrays(GL_TRIANGLES, 0, 36);*/
+        for (uint32_t i = 0; i < 4; i++)
+        {
+            glm::mat4 model = glm::mat4(1.0f);
 
+            model = glm::translate(model,pointLightPositions[i]);
+            model = glm::scale(model, glm::vec3(0.1f));
+            lightCubeshader.SetUniformMat4("model", model);
 
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+      
         //glm::mat4 mvp = projection * view * model;
         //shader.SetUniformMat4("mvp", mvp);  
      
