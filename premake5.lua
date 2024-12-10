@@ -16,6 +16,7 @@ workspace "OpenGL"
 	IncludeDir["ImGui"] = "OpenGL/vendor/imgui"
 	IncludeDir["glm"]   = "OpenGL/vendor/glm"
 	IncludeDir["stb_image"] = "OpenGL/vendor/stb_image"
+	IncludeDir["Assimp"] = "OpenGL/vendor/Assimp/include"
 
 
 	group "Dependencies"
@@ -53,7 +54,8 @@ workspace "OpenGL"
 			"%{IncludeDir.GLAD}",
 			"%{IncludeDir.ImGui}",
 			"%{IncludeDir.glm}",
-			"%{IncludeDir.stb_image}"
+			"%{IncludeDir.stb_image}",
+			"%{IncludeDir.Assimp}"
 		}
 
 		links
@@ -61,7 +63,8 @@ workspace "OpenGL"
 			"GLFW",
 			"GLAD",
 			"ImGui",
-			"opengl32.lib"
+			"opengl32.lib",
+			"assimp-vc143-mtd.lib"
 		}
 
 		filter "system.windows"

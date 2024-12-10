@@ -1,0 +1,14 @@
+glm::radians()
+角度制转弧度制，可应用于glm::rotate()中。
+glm::translate()
+返回一个平移矩阵，第一个参数是目标矩阵，第二个参数是平移的方向向量。
+glm::rotate()
+返回一个将点绕某个轴逆时针旋转一定弧度的旋转矩阵，第一个参数是弧度，第二个参数是旋转轴。
+glm::scale()
+返回一个缩放矩阵，第一个参数是目标矩阵，第二个参数是在各坐标轴上的缩放系数。
+glm::ortho(float left, float right, float bottom, float top, float zNear, float zFar);
+正交投影矩阵。前四个参数分别是视口的左、右、上、下坐标。第五和第六个参数则定义了近平面和远平面的距离。
+glm::perspective(float fovy, float aspect, float zNear, float zFar);
+透视投影矩阵。第一个参数为视锥上下面之间的夹角，第二个参数为视口宽高比，第三、四个参数分别为近平面和远平面的深度。
+glm::value_ptr()
+传入一个矩阵，返回一个数组。

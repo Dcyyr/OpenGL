@@ -1,9 +1,2 @@
-﻿  Application.cpp
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(177,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(326,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(327,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(331,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(332,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(334,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(335,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-  OpenGL.vcxproj -> D:\dev\OpenGL\bin\Debug-windows-x86_64\OpenGL\OpenGL.exe
+﻿  Mesh.cpp
+D:\dev\OpenGL\OpenGL\src\OpenGLRender\Mesh.cpp(43,45): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data

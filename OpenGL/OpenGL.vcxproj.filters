@@ -24,39 +24,57 @@
     <ClInclude Include="src\OpenGLRender\Buffers.h">
       <Filter>src\OpenGLRender</Filter>
     </ClInclude>
+    <ClInclude Include="src\OpenGLRender\Camera.h">
+      <Filter>src\OpenGLRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OpenGLRender\Renderer.h">
+      <Filter>src\OpenGLRender</Filter>
+    </ClInclude>
     <ClInclude Include="src\OpenGLRender\Shader.h">
+      <Filter>src\OpenGLRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OpenGLRender\Texture2D.h">
+      <Filter>src\OpenGLRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OpenGLRender\VertexArray.h">
+      <Filter>src\OpenGLRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OpenGLRender\VertexBufferLayout.h">
       <Filter>src\OpenGLRender</Filter>
     </ClInclude>
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\OpenGLRender\Texture2D.h" />
-    <ClInclude Include="src\OpenGLRender\VertexArray.h" />
-    <ClInclude Include="src\OpenGLRender\VertexBufferLayout.h" />
-    <ClInclude Include="src\OpenGLRender\Renderer.h" />
-    <ClInclude Include="src\OpenGLRender\Camera.h" />
+    <ClInclude Include="src\OpenGLRender\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
       <Filter>src\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\Debug.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
     <ClCompile Include="src\OpenGLRender\Buffers.cpp">
+      <Filter>src\OpenGLRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OpenGLRender\Camera.cpp">
+      <Filter>src\OpenGLRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OpenGLRender\Renderer.cpp">
       <Filter>src\OpenGLRender</Filter>
     </ClCompile>
     <ClCompile Include="src\OpenGLRender\Shader.cpp">
       <Filter>src\OpenGLRender</Filter>
     </ClCompile>
+    <ClCompile Include="src\OpenGLRender\Texture2D.cpp">
+      <Filter>src\OpenGLRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OpenGLRender\VertexArray.cpp">
+      <Filter>src\OpenGLRender</Filter>
+    </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\OpenGLRender\Texture2D.cpp" />
-    <ClCompile Include="src\Core\Debug.cpp" />
-    <ClCompile Include="src\OpenGLRender\VertexArray.cpp" />
-    <ClCompile Include="src\OpenGLRender\Renderer.cpp" />
-    <ClCompile Include="src\OpenGLRender\Camera.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shader\LightShader.shader" />
-    <None Include="res\shader\LightCubeShader.shader" />
+    <ClCompile Include="src\OpenGLRender\Mesh.cpp" />
   </ItemGroup>
 </Project>
