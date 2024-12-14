@@ -92,6 +92,7 @@
     <ClInclude Include="src\OpenGLRender\Buffers.h" />
     <ClInclude Include="src\OpenGLRender\Camera.h" />
     <ClInclude Include="src\OpenGLRender\Mesh.h" />
+    <ClInclude Include="src\OpenGLRender\Model.h" />
     <ClInclude Include="src\OpenGLRender\Renderer.h" />
     <ClInclude Include="src\OpenGLRender\Shader.h" />
     <ClInclude Include="src\OpenGLRender\Texture2D.h" />
@@ -105,6 +106,7 @@
     <ClCompile Include="src\OpenGLRender\Buffers.cpp" />
     <ClCompile Include="src\OpenGLRender\Camera.cpp" />
     <ClCompile Include="src\OpenGLRender\Mesh.cpp" />
+    <ClCompile Include="src\OpenGLRender\Model.cpp" />
     <ClCompile Include="src\OpenGLRender\Renderer.cpp" />
     <ClCompile Include="src\OpenGLRender\Shader.cpp" />
     <ClCompile Include="src\OpenGLRender\Texture2D.cpp" />
@@ -122,7 +124,20 @@
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="res\shader\Model.shader" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets" Condition="Exists('..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" />
+    <Import Project="..\packages\Assimp.3.0.0\build\native\Assimp.targets" Condition="Exists('..\packages\Assimp.3.0.0\build\native\Assimp.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\Assimp.3.0.0\build\native\Assimp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Assimp.3.0.0\build\native\Assimp.targets'))" />
+  </Target>
 </Project>

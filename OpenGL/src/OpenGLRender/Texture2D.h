@@ -5,7 +5,7 @@
 class Texture2D
 {
 public:
-	Texture2D(uint32_t width, uint32_t height);
+	Texture2D(uint32_t width, uint32_t height):m_Width(width),m_Height(height){}
 	Texture2D(const std::string& filepath);
 	virtual ~Texture2D();
 

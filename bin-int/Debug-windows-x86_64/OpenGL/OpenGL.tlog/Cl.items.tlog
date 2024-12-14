@@ -2,6 +2,8 @@ D:\dev\OpenGL\OpenGL\src\Core\Application.cpp;D:\dev\OpenGL\bin-int\Debug-window
 D:\dev\OpenGL\OpenGL\src\Core\Debug.cpp;D:\dev\OpenGL\bin-int\Debug-windows-x86_64\OpenGL\Debug.obj
 D:\dev\OpenGL\OpenGL\src\OpenGLRender\Buffers.cpp;D:\dev\OpenGL\bin-int\Debug-windows-x86_64\OpenGL\Buffers.obj
 D:\dev\OpenGL\OpenGL\src\OpenGLRender\Camera.cpp;D:\dev\OpenGL\bin-int\Debug-windows-x86_64\OpenGL\Camera.obj
+D:\dev\OpenGL\OpenGL\src\OpenGLRender\Mesh.cpp;D:\dev\OpenGL\bin-int\Debug-windows-x86_64\OpenGL\Mesh.obj
+D:\dev\OpenGL\OpenGL\src\OpenGLRender\Model.cpp;D:\dev\OpenGL\bin-int\Debug-windows-x86_64\OpenGL\Model.obj
 D:\dev\OpenGL\OpenGL\src\OpenGLRender\Renderer.cpp;D:\dev\OpenGL\bin-int\Debug-windows-x86_64\OpenGL\Renderer.obj
 D:\dev\OpenGL\OpenGL\src\OpenGLRender\Shader.cpp;D:\dev\OpenGL\bin-int\Debug-windows-x86_64\OpenGL\Shader.obj
 D:\dev\OpenGL\OpenGL\src\OpenGLRender\Texture2D.cpp;D:\dev\OpenGL\bin-int\Debug-windows-x86_64\OpenGL\Texture2D.obj

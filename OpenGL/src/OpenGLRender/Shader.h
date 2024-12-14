@@ -2,7 +2,6 @@
 #include <iostream>
 #include <unordered_map>
 #include <glm/glm.hpp>
-#include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Core/Debug.h"
@@ -29,7 +28,7 @@ private:
 	std::string ReadFile(const std::string& filepath);
 	std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
 	void Compile(std::unordered_map<GLenum, std::string>& shadersource);
-private:
+public:
 	uint32_t m_RendererID;
 	std::string m_Name;
 };

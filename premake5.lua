@@ -11,12 +11,12 @@ workspace "OpenGL"
 	outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 	IncludeDir = {}
-	IncludeDir["GLFW"]  = "OpenGL/vendor/GLFW/include"
-	IncludeDir["GLAD"]  = "OpenGL/vendor/GLAD/include"
-	IncludeDir["ImGui"] = "OpenGL/vendor/imgui"
-	IncludeDir["glm"]   = "OpenGL/vendor/glm"
+	IncludeDir["GLFW"]		= "OpenGL/vendor/GLFW/include"
+	IncludeDir["GLAD"]		= "OpenGL/vendor/GLAD/include"
+	IncludeDir["ImGui"]		= "OpenGL/vendor/imgui"
+	IncludeDir["glm"]		= "OpenGL/vendor/glm"
 	IncludeDir["stb_image"] = "OpenGL/vendor/stb_image"
-	IncludeDir["Assimp"] = "OpenGL/vendor/Assimp/include"
+	IncludeDir["Assimp"]    = "OpenGL/vendor/Assimp/include"
 
 
 	group "Dependencies"

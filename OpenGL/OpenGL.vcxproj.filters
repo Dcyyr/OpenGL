@@ -46,6 +46,7 @@
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
     <ClInclude Include="src\OpenGLRender\Mesh.h" />
+    <ClInclude Include="src\OpenGLRender\Model.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -76,5 +77,10 @@
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
     <ClCompile Include="src\OpenGLRender\Mesh.cpp" />
+    <ClCompile Include="src\OpenGLRender\Model.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shader\Model.shader" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

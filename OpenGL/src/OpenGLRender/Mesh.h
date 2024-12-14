@@ -1,50 +1,57 @@
 #pragma once
-#include <iostream>
-#include <glad/glad.h>
-#include <vector>
-#include <string>
-#include <glm/glm.hpp>
 
-#include "OpenGLRender/Shader.h"
+#include <OpenGLRender/shader.h>
+
+#include <string>
+#include <vector>
 
 const int MAX_BONE_INFLUENCE = 4;
 
-struct Vertex
+struct VertexProps 
 {
-	glm::vec3 Position;
-	glm::vec3 Normal;
-	glm::vec2 TexCoords;
-
-	glm::vec3 Tangent;//切线
-
-	glm::vec3 Bitangent;//位切线
-	//骨索引
-	int BoneIDs[MAX_BONE_INFLUENCE];
-	//每根骨头的重量
-	float Weights[MAX_BONE_INFLUENCE];
-
+    // position
+    glm::vec3 Position;
+    // normal
+    glm::vec3 Normal;
+    // texCoords
+    glm::vec2 TexCoords;
+    // tangent
+    glm::vec3 Tangent;
+    // bitangent
+    glm::vec3 Bitangent;
+    //bone indexes which will influence this vertex
+    int BoneIDs[MAX_BONE_INFLUENCE];
+    //weights from each bone
+    float Weights[MAX_BONE_INFLUENCE];
 };
 
-struct Texture
+struct TextureProps 
 {
-	uint32_t Id;
-	std::string Path;
-	std::string Type;
+    unsigned int Id;
+    std::string Type;
+    std::string Path;
 };
 
-class Mesh
+class Mesh 
 {
 public:
-	Mesh(std::vector<Vertex> vertices,std::vector<uint32_t> indices,std::vector<Texture> textures);
-
-	void Draw(Shader& shader);
+    // constructor
+    Mesh(std::vector<VertexProps> vertices, std::vector<unsigned int> indices, std::vector<TextureProps> textures);
+ 
+    // render the mesh
+    void Draw(Shader& shader);
 
 private:
-	void SetupMesh();
-private:
-	uint32_t m_RendererID;
+    // initializes all the buffer objects/arrays
+    void SetupMesh();
 
-	std::vector<Vertex> m_vertices;
-	std::vector<uint32_t> m_indices;
-	std::vector<Texture> m_textures;
+private:
+    // mesh Data
+    std::vector<VertexProps>       m_Vertices;
+    std::vector<uint32_t>          m_Indices;
+    std::vector<TextureProps>      m_Textures;
+    // render data 
+    uint32_t VBO, EBO, VAO;
+   
+    
 };
