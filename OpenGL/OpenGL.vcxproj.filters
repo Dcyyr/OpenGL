@@ -77,10 +77,11 @@
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
     <ClCompile Include="src\OpenGLRender\Mesh.cpp" />
-    <ClCompile Include="src\OpenGLRender\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\Model.shader" />
     <None Include="packages.config" />
+    <None Include="res\shader\StencilTest.shader" />
+    <None Include="res\shader\StencilSingleColor.shader" />
   </ItemGroup>
 </Project>

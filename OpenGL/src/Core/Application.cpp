@@ -7,7 +7,6 @@
 
 #include <imgui.h>
 
-
 #include "OpenGLRender/Buffers.h"
 #include "OpenGLRender/Shader.h"
 #include "OpenGLRender/Texture2D.h"
@@ -16,29 +15,31 @@
 #include "OpenGLRender/Camera.h"
 #include "OpenGLRender/Model.h"
 
+//#include "Core/WindowsInput.h"
+void KeyInput(GLFWwindow* window);
 void MouseCallback(GLFWwindow* window, double xpos, double ypos);
 void MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-void Input(GLFWwindow* window);
 
-const uint32_t width = 1600;
-const uint32_t height = 900;
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-float lastX = width / 2.0f;
-float lastY = height / 2.0f;
-bool firstMouse = true;
-
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
+const uint32_t width = 1600;
+const uint32_t height = 900;
+
+float lastX = width / 2.0f;
+float lastY = height / 2.0f;
+
+bool firstMouse = true;
 
 int main()
 {
 
     if (!glfwInit()) return -1;
 
-    /* Create a windowed mode window and its OpenGL context */
+   
     GLFWwindow* window = glfwCreateWindow(1600, 900, "Hello World", NULL, NULL);
 
     if (!window) 
@@ -46,28 +47,120 @@ int main()
         glfwTerminate();
         return -1;
     }
-
+    
+    
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
-    glfwMakeContextCurrent(window);
-    glfwSetCursorPosCallback(window, MouseCallback);
-    glfwSetScrollCallback(window, MouseScrollCallback);
+    
+    glfwSetCursorPosCallback(window,MouseCallback);
+    glfwSetScrollCallback(window,MouseScrollCallback);
 
     // tell GLFW to capture our mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "初始化GLAD失败！" << std::endl;
         return -1;
     }
-    //stbi_set_flip_vertically_on_load(1);
 
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+   /* glEnable(GL_STENCIL_TEST);
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);*/
 
-    Shader modelShader("res/shader/Model.shader");
-    Model Loadmodel ("res/model/ren/nanosuit.obj");
+    float cubeVertices[] = {
+        // positions          // texture Coords
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    };
+    float planeVertices[] = {
+        // positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
+         5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
+        -5.0f, -0.5f,  5.0f,  0.0f, 0.0f,
+        -5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
+
+         5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
+        -5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
+         5.0f, -0.5f, -5.0f,  2.0f, 2.0f
+    };
     
+   
+    // cube VAO
+    VertexArray cubeVa;
+    VertexBuffer cubeVb(cubeVertices,sizeof(cubeVertices));
+    
+    VertexBufferLayout cubeLayer;
+    cubeLayer.Push<float>(3);
+    cubeVa.AddVertexBuffer(cubeVb,cubeLayer);
+    cubeLayer.Push<float>(2);
+    cubeVa.AddVertexBuffer(cubeVb, cubeLayer);
+    
+    cubeVa.Unbind();
+
+
+    // plane VAO
+    VertexArray planeVa;
+    VertexBuffer planeVb(planeVertices, sizeof(planeVertices));
+    
+    VertexBufferLayout planeLayer;
+    planeLayer.Push<float>(3);
+    planeVa.AddVertexBuffer(planeVb, planeLayer);
+    planeLayer.Push<float>(2);
+    planeVa.AddVertexBuffer(planeVb, planeLayer);
+
+    planeVa.Unbind();
+    
+
+    Shader StencilTest("res/shader/StencilTest.shader");
+    //Shader StencilSingleColor("res/shader/StencilSingleColor.shader");
+    
+    Texture2D CubeTexture("res/texture/marble.jpg");
+    Texture2D FloorTexture("res/texture/metal.png");
+
+    StencilTest.Bind();
+    StencilTest.SetUniformInt("texture1", 0);
+
     Renderer render;
 
 
@@ -78,29 +171,37 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        Input(window);
-
+        KeyInput(window);
+        
         /* Render here */
         render.Clear();
 
-        modelShader.Bind();
-        
-
-        
-
+        StencilTest.Bind();
+        glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        modelShader.SetUniformMat4("view", view);
-
         glm::mat4 projection = glm::perspective(glm::radians(camera.m_Zoom), (float)width / (float)height, 0.1f, 100.0f);
-        modelShader.SetUniformMat4("projection", projection);
-        
-        glm::mat4 model = glm::mat4(1.0);//必需初始化
-        model = glm::translate(model, glm::vec3(0.0f, -10.0f, -15.0f));
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-        modelShader.SetUniformMat4("model", model);
-        Loadmodel.Draw(modelShader);
-    
-     
+        StencilTest.SetUniformMat4("view", view);
+        StencilTest.SetUniformMat4("projection", projection);
+
+        // cubes
+        cubeVa.Bind();
+        CubeTexture.Bind();
+        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+        StencilTest.SetUniformMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+        StencilTest.SetUniformMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+        // floor
+        planeVa.Bind();
+        FloorTexture.Bind();
+        StencilTest.SetUniformMat4("model", glm::mat4(1.0f));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINE线框，GL_FILL恢复默认
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -108,16 +209,19 @@ int main()
         /* Poll for and process events */
         glfwPollEvents();
     }
+   
+
 
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
 }
 
-void Input(GLFWwindow* window)
+
+void KeyInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window,1);
+        glfwSetWindowShouldClose(window, 1);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.CameraInput(CameraMoveDirection::FORWARD, deltaTime);
@@ -158,3 +262,5 @@ void MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.MouseScroll(static_cast<float>(yoffset));
 }
+
+

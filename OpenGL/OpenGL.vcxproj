@@ -106,7 +106,6 @@
     <ClCompile Include="src\OpenGLRender\Buffers.cpp" />
     <ClCompile Include="src\OpenGLRender\Camera.cpp" />
     <ClCompile Include="src\OpenGLRender\Mesh.cpp" />
-    <ClCompile Include="src\OpenGLRender\Model.cpp" />
     <ClCompile Include="src\OpenGLRender\Renderer.cpp" />
     <ClCompile Include="src\OpenGLRender\Shader.cpp" />
     <ClCompile Include="src\OpenGLRender\Texture2D.cpp" />
@@ -127,6 +126,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="res\shader\Model.shader" />
+    <None Include="res\shader\StencilSingleColor.shader" />
+    <None Include="res\shader\StencilTest.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
