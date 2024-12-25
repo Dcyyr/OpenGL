@@ -1,9 +1,9 @@
 ﻿  Application.cpp
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(170,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(247,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(248,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(252,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(253,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(255,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(256,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(171,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(282,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(283,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(287,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(288,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(290,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\dev\OpenGL\OpenGL\src\Core\Application.cpp(291,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   OpenGL.vcxproj -> D:\dev\OpenGL\bin\Debug-windows-x86_64\OpenGL\OpenGL.exe

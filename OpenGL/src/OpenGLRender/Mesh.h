@@ -9,19 +9,19 @@ const int MAX_BONE_INFLUENCE = 4;
 
 struct VertexProps 
 {
-    // position
+    // 位置
     glm::vec3 Position;
-    // normal
+    // 法线
     glm::vec3 Normal;
-    // texCoords
+    // 纹理坐标
     glm::vec2 TexCoords;
-    // tangent
+    // 切线
     glm::vec3 Tangent;
-    // bitangent
+    // 位切线
     glm::vec3 Bitangent;
-    //bone indexes which will influence this vertex
+    //影响该顶点的骨索引
     int BoneIDs[MAX_BONE_INFLUENCE];
-    //weights from each bone
+    //每块骨头的重量
     float Weights[MAX_BONE_INFLUENCE];
 };
 
@@ -35,14 +35,13 @@ struct TextureProps
 class Mesh 
 {
 public:
-    // constructor
     Mesh(std::vector<VertexProps> vertices, std::vector<unsigned int> indices, std::vector<TextureProps> textures);
  
     // render the mesh
     void Draw(Shader& shader);
 
 private:
-    // initializes all the buffer objects/arrays
+    // 初始化所有缓冲区对象/数组
     void SetupMesh();
 
 private:

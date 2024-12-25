@@ -66,9 +66,10 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-   /* glEnable(GL_STENCIL_TEST);
-    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);*/
+    glEnable(GL_STENCIL_TEST);
+    glStencilFunc(GL_NOTEQUAL, 1, 0xff);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+   
 
     float cubeVertices[] = {
         // positions          // texture Coords
@@ -153,7 +154,7 @@ int main()
     
 
     Shader StencilTest("res/shader/StencilTest.shader");
-    //Shader StencilSingleColor("res/shader/StencilSingleColor.shader");
+    Shader StencilSingleColor("res/shader/StencilSingleColor.shader");
     
     Texture2D CubeTexture("res/texture/marble.jpg");
     Texture2D FloorTexture("res/texture/metal.png");
@@ -176,12 +177,19 @@ int main()
         /* Render here */
         render.Clear();
 
-        StencilTest.Bind();
+        StencilSingleColor.Bind();
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.m_Zoom), (float)width / (float)height, 0.1f, 100.0f);
+        StencilSingleColor.SetUniformMat4("view",view);
+        StencilSingleColor.SetUniformMat4("projection", projection);
+
+        StencilTest.Bind();
         StencilTest.SetUniformMat4("view", view);
         StencilTest.SetUniformMat4("projection", projection);
+
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
 
         // cubes
         cubeVa.Bind();
@@ -189,12 +197,13 @@ int main()
         model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
         StencilTest.SetUniformMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
+
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
         StencilTest.SetUniformMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-
+        glStencilMask(0x00);
         // floor
         planeVa.Bind();
         FloorTexture.Bind();
@@ -202,7 +211,33 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
 
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINEÏß¿ò£¬GL_FILL»Ö¸´Ä¬ÈÏ
+
+        glStencilFunc(GL_NOTEQUAL, 1, 0xff);
+        glStencilMask(0x00);
+        glDisable(GL_DEPTH_TEST);
+        StencilSingleColor.Bind();
+        float scale = 1.1f;
+
+        //cubes
+        cubeVa.Bind();
+        
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+        model = glm::scale(model, glm::vec3(scale, scale, scale));
+        StencilSingleColor.SetUniformMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(scale, scale, scale));
+        StencilSingleColor.SetUniformMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        cubeVa.Unbind();
+        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 0, 0xff);
+        glEnable(GL_DEPTH_TEST);
+
+       // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINEÏß¿ò£¬GL_FILL»Ö¸´Ä¬ÈÏ
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
