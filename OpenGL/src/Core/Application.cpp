@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <map>
+
 #include <imgui.h>
 
 #include "OpenGLRender/Buffers.h"
@@ -65,10 +67,8 @@ int main()
     }
 
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glEnable(GL_STENCIL_TEST);
-    glStencilFunc(GL_NOTEQUAL, 1, 0xff);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
    
 
     float cubeVertices[] = {
@@ -126,7 +126,16 @@ int main()
          5.0f, -0.5f, -5.0f,  2.0f, 2.0f
     };
     
-   
+    float transparentVertices[] = {
+        // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
+        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+        0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
+        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+
+        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+        1.0f,  0.5f,  0.0f,  1.0f,  0.0f
+    };
     // cube VAO
     VertexArray cubeVa;
     VertexBuffer cubeVb(cubeVertices,sizeof(cubeVertices));
@@ -136,8 +145,6 @@ int main()
     cubeVa.AddVertexBuffer(cubeVb,cubeLayer);
     cubeLayer.Push<float>(2);
     cubeVa.AddVertexBuffer(cubeVb, cubeLayer);
-    
-    cubeVa.Unbind();
 
 
     // plane VAO
@@ -150,17 +157,36 @@ int main()
     planeLayer.Push<float>(2);
     planeVa.AddVertexBuffer(planeVb, planeLayer);
 
-    planeVa.Unbind();
     
+    //transparent VAO
+    VertexArray transparentVa;
+    VertexBuffer transparentVb(transparentVertices,sizeof(transparentVertices));
 
-    Shader StencilTest("res/shader/StencilTest.shader");
-    Shader StencilSingleColor("res/shader/StencilSingleColor.shader");
+    VertexBufferLayout transparentLayer;
+    transparentLayer.Push<float>(3);
+    transparentVa.AddVertexBuffer(transparentVb, transparentLayer);
+    transparentLayer.Push<float>(2);
+    transparentVa.AddVertexBuffer(transparentVb, transparentLayer);
+
+    transparentVa.Unbind();
+
+    Shader Blend("res/shader/blending.shader");
     
     Texture2D CubeTexture("res/texture/marble.jpg");
     Texture2D FloorTexture("res/texture/metal.png");
+    Texture2D TransparentTexture("res/texture/window.png");
+    
+    std::vector<glm::vec3> windows
+    {
+        glm::vec3(-1.5f, 0.0f, -0.48f),
+        glm::vec3(1.5f, 0.0f, 0.51f),
+        glm::vec3(0.0f, 0.0f, 0.7f),
+        glm::vec3(-0.3f, 0.0f, -2.3f),
+        glm::vec3(0.5f, 0.0f, -0.6f)
+    };
 
-    StencilTest.Bind();
-    StencilTest.SetUniformInt("texture1", 0);
+    Blend.Bind();
+    Blend.SetUniformInt("texture1", 0);
 
     Renderer render;
 
@@ -174,70 +200,57 @@ int main()
 
         KeyInput(window);
         
+        std::map<float, glm::vec3> sorted;
+        for (uint32_t i = 0; i < windows.size(); i++)
+        {
+            float distance = glm::length(camera.m_Position - windows[i]);
+            sorted[distance] = windows[i];
+        }
+
         /* Render here */
         render.Clear();
 
-        StencilSingleColor.Bind();
+
+        Blend.Bind();
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.m_Zoom), (float)width / (float)height, 0.1f, 100.0f);
-        StencilSingleColor.SetUniformMat4("view",view);
-        StencilSingleColor.SetUniformMat4("projection", projection);
+        Blend.SetUniformMat4("view",view);
+        Blend.SetUniformMat4("projection", projection);
 
-        StencilTest.Bind();
-        StencilTest.SetUniformMat4("view", view);
-        StencilTest.SetUniformMat4("projection", projection);
-
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilMask(0xFF);
-
+   
         // cubes
         cubeVa.Bind();
         CubeTexture.Bind();
         model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-        StencilTest.SetUniformMat4("model", model);
+        Blend.SetUniformMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-        StencilTest.SetUniformMat4("model", model);
+        Blend.SetUniformMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        glStencilMask(0x00);
         // floor
         planeVa.Bind();
         FloorTexture.Bind();
-        StencilTest.SetUniformMat4("model", glm::mat4(1.0f));
+        Blend.SetUniformMat4("model", glm::mat4(1.0f));
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
-
-
-        glStencilFunc(GL_NOTEQUAL, 1, 0xff);
-        glStencilMask(0x00);
-        glDisable(GL_DEPTH_TEST);
-        StencilSingleColor.Bind();
-        float scale = 1.1f;
-
-        //cubes
-        cubeVa.Bind();
         
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-        model = glm::scale(model, glm::vec3(scale, scale, scale));
-        StencilSingleColor.SetUniformMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        //transparent windows
+        transparentVa.Bind();
+        TransparentTexture.Bind();
+        for (std::map<float, glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); it++)
+        {
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, it->second);
+            Blend.SetUniformMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
+      
+     
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(scale, scale, scale));
-        StencilSingleColor.SetUniformMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        cubeVa.Unbind();
-        glStencilMask(0xFF);
-        glStencilFunc(GL_ALWAYS, 0, 0xff);
-        glEnable(GL_DEPTH_TEST);
-
-       // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINEÏß¿ò£¬GL_FILL»Ö¸´Ä¬ÈÏ
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINEÏß¿ò£¬GL_FILL»Ö¸´Ä¬ÈÏ
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 

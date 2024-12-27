@@ -125,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="res\shader\blending.shader" />
     <None Include="res\shader\Model.shader" />
     <None Include="res\shader\StencilSingleColor.shader" />
     <None Include="res\shader\StencilTest.shader" />

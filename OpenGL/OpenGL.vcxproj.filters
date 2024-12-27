@@ -83,5 +83,6 @@
     <None Include="packages.config" />
     <None Include="res\shader\StencilTest.shader" />
     <None Include="res\shader\StencilSingleColor.shader" />
+    <None Include="res\shader\blending.shader" />
   </ItemGroup>
 </Project>
