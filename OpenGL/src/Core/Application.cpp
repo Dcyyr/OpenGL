@@ -16,12 +16,14 @@
 #include "OpenGLRender/Renderer.h"
 #include "OpenGLRender/Camera.h"
 #include "OpenGLRender/Model.h"
+#include "OpenGLRender/FrameBuffers.h"
 
 //#include "Core/WindowsInput.h"
 void KeyInput(GLFWwindow* window);
 void MouseCallback(GLFWwindow* window, double xpos, double ypos);
 void MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
+FrameBufferSpecification fbspec;
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 // timing
@@ -66,57 +68,55 @@ int main()
         return -1;
     }
 
+    Renderer render;
+
+
     glEnable(GL_DEPTH_TEST);//启用深度测试
-    glEnable(GL_BLEND);//启用混合
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
    
-    glEnable(GL_CULL_FACE);//启用面剔除
-    glCullFace(GL_FRONT);//GL_FRONT剔除正向面，GL_BACK剔除背向面，GL_FRONT_AND_BACK
-    glFrontFace(GL_CCW);//默认值是GL_CCW，它代表的是逆时针的环绕顺序，另一个选项是GL_CW，代表的是顺时针顺序。
 
     float cubeVertices[] = {
         // Back face
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right         
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-    // Front face
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-    // Left face
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-    // Right face
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right         
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left     
-     // Bottom face
-     -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-      0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
-      0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-      0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-     -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-     -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-     // Top face
-     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-      0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right     
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-     -0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left        
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
     float planeVertices[] = {
         // positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
@@ -129,15 +129,15 @@ int main()
          5.0f, -0.5f, -5.0f,  2.0f, 2.0f
     };
     
-    float transparentVertices[] = {
-        // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
-        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-        0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
-        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+    float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+        // positions   // texCoords
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
 
-        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
-        1.0f,  0.5f,  0.0f,  1.0f,  0.0f
+        -1.0f,  1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f
     };
     // cube VAO
     VertexArray cubeVa;
@@ -161,37 +161,53 @@ int main()
     planeVa.AddVertexBuffer(planeVb, planeLayer);
 
     
-    //transparent VAO
-    VertexArray transparentVa;
-    VertexBuffer transparentVb(transparentVertices,sizeof(transparentVertices));
+    //screen quad VAO
+    VertexArray ScreenVa;
+    VertexBuffer ScreenVb(quadVertices, sizeof(quadVertices));
+    VertexBufferLayout ScreenLayout;
+    ScreenLayout.Push<float>(2);
+    ScreenVa.AddVertexBuffer(ScreenVb, ScreenLayout);
+    ScreenLayout.Push<float>(2);
+    ScreenVa.AddVertexBuffer(ScreenVb, ScreenLayout);
 
-    VertexBufferLayout transparentLayer;
-    transparentLayer.Push<float>(3);
-    transparentVa.AddVertexBuffer(transparentVb, transparentLayer);
-    transparentLayer.Push<float>(2);
-    transparentVa.AddVertexBuffer(transparentVb, transparentLayer);
+    Shader FrameBuffersShader("res/shader/FrameBuffers.shader");
+    Shader SceneShader("res/shader/FrameBufferScene.shader");
 
-    transparentVa.Unbind();
 
-    Shader Blend("res/shader/blending.shader");
-    
-    Texture2D CubeTexture("res/texture/marble.jpg");
+    Texture2D BoxTexture("res/texture/woodbox.png");
     Texture2D FloorTexture("res/texture/metal.png");
-    Texture2D TransparentTexture("res/texture/window.png");
     
-    std::vector<glm::vec3> windows
-    {
-        glm::vec3(-1.5f, 0.0f, -0.48f),
-        glm::vec3(1.5f, 0.0f, 0.51f),
-        glm::vec3(0.0f, 0.0f, 0.7f),
-        glm::vec3(-0.3f, 0.0f, -2.3f),
-        glm::vec3(0.5f, 0.0f, -0.6f)
-    };
+    
+    FrameBuffersShader.Bind();
+    FrameBuffersShader.SetUniformInt("texture1", 0);
 
-    Blend.Bind();
-    Blend.SetUniformInt("texture1", 0);
+    SceneShader.Bind();
+    SceneShader.SetUniformInt("ScreenTexture", 0);
 
-    Renderer render;
+
+    FrameBuffers fb(fbspec);
+
+    uint32_t framebuffer;
+    glCreateFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    
+    uint32_t m_ColorAttachment;
+    glCreateTextures(GL_TEXTURE_2D,1, &m_ColorAttachment);
+    glBindTexture(GL_TEXTURE_2D, m_ColorAttachment);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorAttachment, 0);
+
+    uint32_t m_DepthAttachment;
+    glGenRenderbuffers(1, &m_DepthAttachment);
+    glBindRenderbuffer(GL_RENDERBUFFER, m_DepthAttachment);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height); 
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthAttachment);
+   
+       
+    fb.Unbind();
+
 
 
     while (!glfwWindowShouldClose(window))
@@ -202,55 +218,51 @@ int main()
         lastFrame = currentFrame;
 
         KeyInput(window);
-        
-        std::map<float, glm::vec3> sorted;
-        for (uint32_t i = 0; i < windows.size(); i++)
-        {
-            float distance = glm::length(camera.m_Position - windows[i]);
-            sorted[distance] = windows[i];
-        }
 
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glEnable(GL_DEPTH_TEST);
+    
         /* Render here */
         render.Clear();
 
 
-        Blend.Bind();
+        FrameBuffersShader.Bind();
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.m_Zoom), (float)width / (float)height, 0.1f, 100.0f);
-        Blend.SetUniformMat4("view",view);
-        Blend.SetUniformMat4("projection", projection);
+        FrameBuffersShader.SetUniformMat4("view",view);
+        FrameBuffersShader.SetUniformMat4("projection", projection);
 
    
         // cubes
         cubeVa.Bind();
-        CubeTexture.Bind();
+        BoxTexture.Bind();
         model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-        Blend.SetUniformMat4("model", model);
+        FrameBuffersShader.SetUniformMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-        Blend.SetUniformMat4("model", model);
+        FrameBuffersShader.SetUniformMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // floor
         planeVa.Bind();
         FloorTexture.Bind();
-        Blend.SetUniformMat4("model", glm::mat4(1.0f));
+        FrameBuffersShader.SetUniformMat4("model", glm::mat4(1.0f));
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
-        //transparent windows
-        transparentVa.Bind();
-        TransparentTexture.Bind();
-        for (std::map<float, glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); it++)
-        {
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, it->second);
-            Blend.SetUniformMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-        }
-      
+        fb.Unbind();
+        glDisable(GL_DEPTH_TEST);
+
+       
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        SceneShader.Bind();
+        ScreenVa.Bind();
+        fb.BindTextures(m_ColorAttachment);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
      
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINE线框，GL_FILL恢复默认

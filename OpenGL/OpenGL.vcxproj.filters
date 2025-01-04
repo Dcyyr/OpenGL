@@ -47,6 +47,7 @@
     </ClInclude>
     <ClInclude Include="src\OpenGLRender\Mesh.h" />
     <ClInclude Include="src\OpenGLRender\Model.h" />
+    <ClInclude Include="src\OpenGLRender\FrameBuffers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -77,6 +78,7 @@
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
     <ClCompile Include="src\OpenGLRender\Mesh.cpp" />
+    <ClCompile Include="src\OpenGLRender\FrameBuffers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\Model.shader" />
@@ -84,5 +86,7 @@
     <None Include="res\shader\StencilTest.shader" />
     <None Include="res\shader\StencilSingleColor.shader" />
     <None Include="res\shader\blending.shader" />
+    <None Include="res\shader\FrameBuffers.shader" />
+    <None Include="res\shader\FrameBufferScene.shader" />
   </ItemGroup>
 </Project>

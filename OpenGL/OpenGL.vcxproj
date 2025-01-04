@@ -91,6 +91,7 @@
     <ClInclude Include="src\Core\Debug.h" />
     <ClInclude Include="src\OpenGLRender\Buffers.h" />
     <ClInclude Include="src\OpenGLRender\Camera.h" />
+    <ClInclude Include="src\OpenGLRender\FrameBuffers.h" />
     <ClInclude Include="src\OpenGLRender\Mesh.h" />
     <ClInclude Include="src\OpenGLRender\Model.h" />
     <ClInclude Include="src\OpenGLRender\Renderer.h" />
@@ -105,6 +106,7 @@
     <ClCompile Include="src\Core\Debug.cpp" />
     <ClCompile Include="src\OpenGLRender\Buffers.cpp" />
     <ClCompile Include="src\OpenGLRender\Camera.cpp" />
+    <ClCompile Include="src\OpenGLRender\FrameBuffers.cpp" />
     <ClCompile Include="src\OpenGLRender\Mesh.cpp" />
     <ClCompile Include="src\OpenGLRender\Renderer.cpp" />
     <ClCompile Include="src\OpenGLRender\Shader.cpp" />
@@ -126,6 +128,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="res\shader\blending.shader" />
+    <None Include="res\shader\FrameBuffers.shader" />
+    <None Include="res\shader\FrameBufferScene.shader" />
     <None Include="res\shader\Model.shader" />
     <None Include="res\shader\StencilSingleColor.shader" />
     <None Include="res\shader\StencilTest.shader" />
