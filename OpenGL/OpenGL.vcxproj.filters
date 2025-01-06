@@ -88,5 +88,7 @@
     <None Include="res\shader\blending.shader" />
     <None Include="res\shader\FrameBuffers.shader" />
     <None Include="res\shader\FrameBufferScene.shader" />
+    <None Include="res\shader\SkyBox.shader" />
+    <None Include="res\shader\CubeMapping.shader" />
   </ItemGroup>
 </Project>

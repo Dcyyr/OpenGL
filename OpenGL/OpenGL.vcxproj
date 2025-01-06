@@ -128,9 +128,11 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="res\shader\blending.shader" />
+    <None Include="res\shader\CubeMapping.shader" />
     <None Include="res\shader\FrameBuffers.shader" />
     <None Include="res\shader\FrameBufferScene.shader" />
     <None Include="res\shader\Model.shader" />
+    <None Include="res\shader\SkyBox.shader" />
     <None Include="res\shader\StencilSingleColor.shader" />
     <None Include="res\shader\StencilTest.shader" />
   </ItemGroup>
