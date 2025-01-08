@@ -72,92 +72,48 @@ int main()
     glEnable(GL_DEPTH_TEST);//启用深度测试
    
     float cubeVertices[] = {
-        // positions          // normals
-       -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-       -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-       -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        // positions         
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
 
-       -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-       -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-       -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
 
-       -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-       -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-       -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-       -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-       -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-       -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
 
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
 
-       -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-       -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-       -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f, -0.5f,
 
-       -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-       -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-       -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-    };
-    float skyboxVertices[] = {
-        // positions          
-        -1.0f,  1.0f, -1.0f,
-        -1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-
-        -1.0f, -1.0f,  1.0f,
-        -1.0f, -1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
-
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-
-        -1.0f, -1.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f, -1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
-
-        -1.0f,  1.0f, -1.0f,
-         1.0f,  1.0f, -1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f, -1.0f,
-
-        -1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f,  1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f,  1.0f,
-         1.0f, -1.0f,  1.0f
+        -0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
     };
 
     // cube VAO
@@ -167,42 +123,41 @@ int main()
     VertexBufferLayout cubeLayer;
     cubeLayer.Push<float>(3);
     cubeVa.AddVertexBuffer(cubeVb,cubeLayer);
-    cubeLayer.Push<float>(3);
-    cubeVa.AddVertexBuffer(cubeVb, cubeLayer);
 
 
-    // skybox VAO
-    VertexArray skyboxVa;
-    VertexBuffer skyboxVb(skyboxVertices, sizeof(skyboxVertices));
-    
-    VertexBufferLayout skyboxLayer;
-    skyboxLayer.Push<float>(3);
-    skyboxVa.AddVertexBuffer(skyboxVb, skyboxLayer);
-    
+    Shader ShaderRed("res/shader/Advance_glsl/Red.shader");
+    Shader ShaderBlue("res/shader/Advance_glsl/Blue.shader");
+    Shader ShaderGreen("res/shader/Advance_glsl/Green.shader");
+    Shader ShaderYellow("res/shader/Advance_glsl/Yellow.shader");
 
-    Shader SkyBoxShader("res/shader/SkyBox.shader");
-    Shader CubeMappingShader("res/shader/CubeMapping.shader");
+    // 首先。我们得到相关的区块索引
+    uint32_t uniformBlockIndexRed = glGetUniformBlockIndex(ShaderRed.m_RendererID, "Matrices");
+    uint32_t uniformBlockIndexBlue = glGetUniformBlockIndex(ShaderBlue.m_RendererID, "Matrices");
+    uint32_t uniformBlockIndexGreen = glGetUniformBlockIndex(ShaderGreen.m_RendererID, "Matrices");
+    uint32_t uniformBlockIndexYellow = glGetUniformBlockIndex(ShaderYellow.m_RendererID, "Matrices");
 
-    Texture2D BoxTexture("res/texture/woodbox.png");
-   
-   std::vector<std::string> Faces
-    {
-         "res/texture/skybox/right.jpg",
-         "res/texture/skybox/left.jpg",
-         "res/texture/skybox/bottom.jpg",
-         "res/texture/skybox/top.jpg",
-         "res/texture/skybox/front.jpg",
-         "res/texture/skybox/back.jpg",
-    };
+    // 然后，我们将每个着色器的统一块链接到这个统一绑定点
+    glUniformBlockBinding(ShaderRed.m_RendererID, uniformBlockIndexRed, 0);
+    glUniformBlockBinding(ShaderBlue.m_RendererID, uniformBlockIndexBlue, 0);
+    glUniformBlockBinding(ShaderGreen.m_RendererID, uniformBlockIndexGreen, 0);
+    glUniformBlockBinding(ShaderYellow.m_RendererID, uniformBlockIndexYellow, 0);
 
-    uint32_t cubemapTexture = loadCubeMap(Faces);
 
-    SkyBoxShader.Bind();
-    SkyBoxShader.SetUniformInt("skybox", 0);
 
-    CubeMappingShader.Bind();
-    CubeMappingShader.SetUniformInt("skybox", 0);
-    
+    uint32_t uboMatrices;
+    glCreateBuffers(1, &uboMatrices);
+    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    // 定义链接到统一绑定点的缓冲区范围
+    glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0,2 * sizeof(glm::mat4));
+
+    // 存储投影矩阵（我们现在只做一次）通过改变 FoV，我们不再使用缩放功能
+    glm::mat4 projection = glm::perspective(45.0f, (float)width / height, 0.1f, 100.0f);
+    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -217,38 +172,42 @@ int main()
         /* Render here */
         render.Clear();
 
-
-        CubeMappingShader.Bind();
-        glm::mat4 model = glm::mat4(1.0f);
+        // 在统一区块中设置视图和投影矩阵，每次循环迭代只需执行一次。
         glm::mat4 view = camera.GetViewMatrix();
-        glm::mat4 projection = glm::perspective(glm::radians(camera.m_Zoom), (float)width / (float)height, 0.1f, 100.0f);
-        CubeMappingShader.SetUniformMat4("model", model);
-        CubeMappingShader.SetUniformMat4("view",view);
-        CubeMappingShader.SetUniformMat4("projection", projection);
-        CubeMappingShader.SetUniformFloat3("cameraPos", camera.m_Position);
-   
+        glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+        glBufferSubData(GL_UNIFORM_BUFFER,sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
         // cubes
+        ShaderRed.Bind();
         cubeVa.Bind();
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-0.75f, 0.75f, 0.0f));
+        ShaderRed.SetUniformMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-        cubeVa.Unbind();
+       
 
-
-        glDepthFunc(GL_LEQUAL);
-        SkyBoxShader.Bind();
-        view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
-        SkyBoxShader.SetUniformMat4("view", view);
-        SkyBoxShader.SetUniformMat4("projection", projection);
-
-        
-        skyboxVa.Bind();
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        ShaderBlue.Bind();
+        cubeVa.Bind();
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.75f, 0.75f, 0.0f));
+        ShaderBlue.SetUniformMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-        skyboxVa.Unbind();
-        glDepthFunc(GL_LESS);
-     
+
+        ShaderGreen.Bind();
+        cubeVa.Bind();
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-0.75f, -0.75f, 0.0f));
+        ShaderGreen.SetUniformMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        ShaderYellow.Bind();
+        cubeVa.Bind();
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.75f, -0.75f, 0.0f));
+        ShaderYellow.SetUniformMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINE线框，GL_FILL恢复默认
         /* Swap front and back buffers */
