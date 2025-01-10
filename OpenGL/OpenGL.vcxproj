@@ -127,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="res\shader\Advance_glsl\Geometry.shader" />
     <None Include="res\shader\Advance_glsl\Red.shader" />
     <None Include="res\shader\Advance_glsl\Blue.shader" />
     <None Include="res\shader\Advance_glsl\Green.shader" />

@@ -8,6 +8,8 @@ static GLenum ShaderTypeFromString(const std::string& type)
 		return GL_VERTEX_SHADER;
 	if (type == "fragment" || type == "pixel")
 		return GL_FRAGMENT_SHADER;
+	if (type == "geometry")
+		return GL_GEOMETRY_SHADER;
 	assert(false, "Unknown shader type");
 	return 0;
 }
@@ -23,10 +25,21 @@ Shader::Shader(const std::string& filepath)
 Shader::Shader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
 	:m_Name(name)
 {
+
+	std::unordered_map<GLenum, std::string> sources;
+	sources[GL_VERTEX_SHADER] = vertexSource;
+	sources[GL_FRAGMENT_SHADER] = fragmentSource;
+	Compile(sources);
+}
+
+Shader::Shader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource,const std::string& geometryshader)
+	:m_Name(name)
+{
 	
 	std::unordered_map<GLenum, std::string> sources;
 	sources[GL_VERTEX_SHADER] = vertexSource;
 	sources[GL_FRAGMENT_SHADER] = fragmentSource;
+	sources[GL_GEOMETRY_SHADER] = geometryshader;
 	Compile(sources);
 }
 
@@ -84,7 +97,7 @@ void Shader::Compile(std::unordered_map<GLenum,std::string>& shaderSources)
 {
 	
 	GLuint program = glCreateProgram();
-	std::array<GLenum, 2> glShaderIDs;
+	std::array<GLenum, 3> glShaderIDs;
 	int glShaderIDIndex = 0;
 	for (auto& kv : shaderSources)
 	{

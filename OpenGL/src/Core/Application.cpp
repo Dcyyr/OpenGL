@@ -70,94 +70,12 @@ int main()
 
 
     glEnable(GL_DEPTH_TEST);//启用深度测试
-   
-    float cubeVertices[] = {
-        // positions         
-        -0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
 
-        -0.5f, -0.5f,  0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-
-        -0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f, -0.5f,
-
-        -0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-    };
-
-    // cube VAO
-    VertexArray cubeVa;
-    VertexBuffer cubeVb(cubeVertices,sizeof(cubeVertices));
-    
-    VertexBufferLayout cubeLayer;
-    cubeLayer.Push<float>(3);
-    cubeVa.AddVertexBuffer(cubeVb,cubeLayer);
-
-
-    Shader ShaderRed("res/shader/Advance_glsl/Red.shader");
-    Shader ShaderBlue("res/shader/Advance_glsl/Blue.shader");
-    Shader ShaderGreen("res/shader/Advance_glsl/Green.shader");
-    Shader ShaderYellow("res/shader/Advance_glsl/Yellow.shader");
-
-    // 首先。我们得到相关的区块索引
-    uint32_t uniformBlockIndexRed = glGetUniformBlockIndex(ShaderRed.m_RendererID, "Matrices");
-    uint32_t uniformBlockIndexBlue = glGetUniformBlockIndex(ShaderBlue.m_RendererID, "Matrices");
-    uint32_t uniformBlockIndexGreen = glGetUniformBlockIndex(ShaderGreen.m_RendererID, "Matrices");
-    uint32_t uniformBlockIndexYellow = glGetUniformBlockIndex(ShaderYellow.m_RendererID, "Matrices");
-
-    // 然后，我们将每个着色器的统一块链接到这个统一绑定点
-    glUniformBlockBinding(ShaderRed.m_RendererID, uniformBlockIndexRed, 0);
-    glUniformBlockBinding(ShaderBlue.m_RendererID, uniformBlockIndexBlue, 0);
-    glUniformBlockBinding(ShaderGreen.m_RendererID, uniformBlockIndexGreen, 0);
-    glUniformBlockBinding(ShaderYellow.m_RendererID, uniformBlockIndexYellow, 0);
-
-
-
-    uint32_t uboMatrices;
-    glCreateBuffers(1, &uboMatrices);
-    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    // 定义链接到统一绑定点的缓冲区范围
-    glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0,2 * sizeof(glm::mat4));
-
-    // 存储投影矩阵（我们现在只做一次）通过改变 FoV，我们不再使用缩放功能
-    glm::mat4 projection = glm::perspective(45.0f, (float)width / height, 0.1f, 100.0f);
-    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
+  
+    Shader shader("res/shader/Advance_glsl/Geometry.shader");
+    //Model  Loadmodel("res/model/planet/planet.obj");
+    //Model  Loadmodel("res/model/back/backpack.obj");
+    Model  Loadmodel("res/model/ren/nanosuit.obj");
 
     while (!glfwWindowShouldClose(window))
     {
@@ -172,42 +90,19 @@ int main()
         /* Render here */
         render.Clear();
 
-        // 在统一区块中设置视图和投影矩阵，每次循环迭代只需执行一次。
+        shader.Bind();
+        glm::mat4 model = glm::mat4(1.0);
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-        glBufferSubData(GL_UNIFORM_BUFFER,sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        shader.SetUniformMat4("model", model);
+        shader.SetUniformMat4("view", view);
+        shader.SetUniformMat4("projection", projection);
 
-        // cubes
-        ShaderRed.Bind();
-        cubeVa.Bind();
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-0.75f, 0.75f, 0.0f));
-        ShaderRed.SetUniformMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        shader.SetUniformFloat("time", static_cast<float>(glfwGetTime()));
+        
+        Loadmodel.Draw(shader);
        
-
-        ShaderBlue.Bind();
-        cubeVa.Bind();
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.75f, 0.75f, 0.0f));
-        ShaderBlue.SetUniformMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
-        ShaderGreen.Bind();
-        cubeVa.Bind();
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-0.75f, -0.75f, 0.0f));
-        ShaderGreen.SetUniformMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
-        ShaderYellow.Bind();
-        cubeVa.Bind();
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.75f, -0.75f, 0.0f));
-        ShaderYellow.SetUniformMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
+        glDrawArrays(GL_POINTS, 0, 4);
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINE线框，GL_FILL恢复默认
         /* Swap front and back buffers */

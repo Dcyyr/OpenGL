@@ -13,6 +13,7 @@ class Shader
 public:
 	Shader(const std::string& filepath);
 	Shader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource);
+	Shader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource, const std::string& geometryshader);
 	virtual ~Shader();
 
 	virtual void Bind() const;
