@@ -95,5 +95,7 @@
     <None Include="res\shader\Advance_glsl\Blue.shader" />
     <None Include="res\shader\Advance_glsl\Yellow.shader" />
     <None Include="res\shader\Advance_glsl\Geometry.shader" />
+    <None Include="res\shader\Planet.shader" />
+    <None Include="res\shader\Asteroid.shader" />
   </ItemGroup>
 </Project>

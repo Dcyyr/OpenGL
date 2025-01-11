@@ -40,17 +40,17 @@ public:
     // render the mesh
     void Draw(Shader& shader);
 
+    uint32_t VBO, EBO, VAO;
+    std::vector<VertexProps>       m_Vertices;
+    std::vector<uint32_t>          m_Indices;
+    std::vector<TextureProps>      m_Textures;
 private:
     // 初始化所有缓冲区对象/数组
     void SetupMesh();
 
 private:
     // mesh Data
-    std::vector<VertexProps>       m_Vertices;
-    std::vector<uint32_t>          m_Indices;
-    std::vector<TextureProps>      m_Textures;
     // render data 
-    uint32_t VBO, EBO, VAO;
    
     
 };

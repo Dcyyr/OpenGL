@@ -132,10 +132,12 @@
     <None Include="res\shader\Advance_glsl\Blue.shader" />
     <None Include="res\shader\Advance_glsl\Green.shader" />
     <None Include="res\shader\Advance_glsl\Yellow.shader" />
+    <None Include="res\shader\Asteroid.shader" />
     <None Include="res\shader\blending.shader" />
     <None Include="res\shader\CubeMapping.shader" />
     <None Include="res\shader\FrameBuffers.shader" />
     <None Include="res\shader\FrameBufferScene.shader" />
+    <None Include="res\shader\Planet.shader" />
     <None Include="res\shader\Model.shader" />
     <None Include="res\shader\SkyBox.shader" />
     <None Include="res\shader\StencilSingleColor.shader" />
