@@ -97,5 +97,6 @@
     <None Include="res\shader\Advance_glsl\Geometry.shader" />
     <None Include="res\shader\Planet.shader" />
     <None Include="res\shader\Asteroid.shader" />
+    <None Include="res\shader\Advance_Lighting\BlinnPhong.shader" />
   </ItemGroup>
 </Project>
