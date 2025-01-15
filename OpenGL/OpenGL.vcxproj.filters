@@ -98,5 +98,6 @@
     <None Include="res\shader\Planet.shader" />
     <None Include="res\shader\Asteroid.shader" />
     <None Include="res\shader\Advance_Lighting\BlinnPhong.shader" />
+    <None Include="res\shader\Advance_Lighting\GammaCorrection.shader" />
   </ItemGroup>
 </Project>

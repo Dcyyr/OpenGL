@@ -37,7 +37,10 @@ float lastY = height / 2.0f;
 bool firstMouse = true;
 
 bool blinn = false;
-bool blinnkeypressed = false;
+bool blinnKeyPressed = false;
+
+bool GammaEnabled = false;
+bool GammaKeyPressed = false;
 
 int main()
 {
@@ -75,7 +78,7 @@ int main()
     glEnable(GL_DEPTH_TEST);//启用深度测试
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+    //glEnable(GL_FRAMEBUFFER_SRGB);
     
     float planeVertices[] = {
         // positions            // normals         // texcoords
@@ -88,7 +91,7 @@ int main()
          10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,  10.0f, 10.0f
     };
 
-    Shader LightShader("res/shader/Advance_Lighting/BlinnPhong.shader");
+    Shader LightShader("res/shader/Advance_Lighting/GammaCorrection.shader");
     //plane
     VertexArray planeVa;
     planeVa.Bind();
@@ -105,11 +108,27 @@ int main()
 
 
     Texture2D texture1("res/texture/wood.png");
-    
-    LightShader.Bind();
-    //LightShader.SetUniformInt("texture1", 0);
+    Texture2D gammatexture("res/texture/wood.png");
 
-    glm::vec3 lightPos( 0.0f,0.0f,0.0f );
+    LightShader.Bind();
+    LightShader.SetUniformInt("texture1", 0);
+
+    glm::vec3 lightPositions[] = 
+    {
+     glm::vec3(-3.0f, 0.0f, 0.0f),
+     glm::vec3(-1.0f, 0.0f, 0.0f),
+     glm::vec3(1.0f, 0.0f, 0.0f),
+     glm::vec3(3.0f, 0.0f, 0.0f)
+    };
+
+    glm::vec3 lightColors[] = 
+    {
+        glm::vec3(0.25),
+        glm::vec3(0.50),
+        glm::vec3(0.75),
+        glm::vec3(1.00)
+    };
+   
 
     while (!glfwWindowShouldClose(window))
     {
@@ -131,15 +150,24 @@ int main()
         LightShader.SetUniformMat4("view", view);
 
         LightShader.SetUniformFloat3("viewPos",camera.m_Position);
-        LightShader.SetUniformFloat3("lightPos", lightPos);
-        LightShader.SetUniformInt("blinn", blinn);
+        glUniform3fv(glGetUniformLocation(LightShader.m_RendererID, "lightPositions"), 4, &lightPositions[0][0]);
+        glUniform3fv(glGetUniformLocation(LightShader.m_RendererID, "lightColors"), 4, &lightColors[0][0]);
+        LightShader.SetUniformInt("gamma", GammaEnabled);
 
 
         planeVa.Bind();
-        texture1.Bind();
+        if (GammaEnabled)
+        {
+            gammatexture.Bind();
+        }
+        else
+        {
+             texture1.Bind();
+        }
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         //std::cout << (blinn ? "BlinnPhong" : "Phong") << std::endl;
+        std::cout << (GammaEnabled ? "Gamma enabled" : "Gamma disabled") << std::endl;
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINE线框，GL_FILL恢复默认
         /* Swap front and back buffers */
@@ -175,14 +203,24 @@ void KeyInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         camera.CameraInput(CameraMoveDirection::DOWN, deltaTime);
 
-    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && !blinnkeypressed)
+    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && !blinnKeyPressed)
     {
         blinn = !blinn;
-        blinnkeypressed = true;
+        blinnKeyPressed = true;
     }
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_RELEASE)
     {
-        blinnkeypressed = false;
+        blinnKeyPressed = false;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !GammaKeyPressed)
+    {
+        GammaEnabled = !GammaEnabled;
+        GammaKeyPressed = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
+    {
+        GammaKeyPressed = false;
     }
 }
 

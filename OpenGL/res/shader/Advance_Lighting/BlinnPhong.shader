@@ -1,11 +1,11 @@
-//不要多出空格 :(
+//注意空格 :(
 #type vertex
 #version 430 core
 layout (location = 0) in vec3 i_Pos;
 layout (location = 1) in vec3 i_Normal;
 layout (location = 2) in vec2 i_TexCoords;
 
-// declare an interface block; see 'Advanced GLSL' for what these are.
+
 out VS_OUT {
     vec3 FragPos;
     vec3 Normal;
@@ -42,7 +42,7 @@ uniform bool blinn;
 void main()
 {           
     vec3 color = texture(texture1, fs_in.TexCoords).rgb;
-    // 环境
+    // 环境光
     vec3 ambient = 0.15 * color;
     // 漫反射
     vec3 lightDir = normalize(lightPos - fs_in.FragPos);
@@ -64,6 +64,6 @@ void main()
         vec3 reflectDir = reflect(-lightDir, normal);
         spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
     }
-    vec3 specular = vec3(0.5) * spec; // assuming bright white light color
+    vec3 specular = vec3(0.5) * spec; 
     FragColor = vec4(ambient + diffuse + specular, 1.0);
 }
