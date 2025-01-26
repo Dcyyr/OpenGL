@@ -19,12 +19,12 @@ public:
 	virtual void Bind() const;
 	virtual void Unbind() const;
 
-	virtual void SetUniformInt(const std::string& name, int value);
-	virtual void SetUniformFloat(const std::string& name, float value);
-	virtual void SetUniformFloat3(const std::string& name, const glm::vec3& value);
-	virtual void SetUniformFloat4(const std::string& name, const glm::vec4& value);
-	virtual void SetUniformMat4(const std::string& name, const glm::mat4& value);
-	virtual void SetUniformBool(const std::string& name, bool value);
+	virtual void SetUniformInt(const std::string& name, int value) const ;
+	virtual void SetUniformFloat(const std::string& name, float value)const;
+	virtual void SetUniformFloat3(const std::string& name, const glm::vec3& value)const;
+	virtual void SetUniformFloat4(const std::string& name, const glm::vec4& value)const;
+	virtual void SetUniformMat4(const std::string& name, const glm::mat4& value)const;
+	virtual void SetUniformBool(const std::string& name, bool value)const;
 private:
 	std::string ReadFile(const std::string& filepath);
 	std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);

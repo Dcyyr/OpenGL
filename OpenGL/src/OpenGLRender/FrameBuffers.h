@@ -4,6 +4,7 @@
 struct FrameBufferSpecification
 {
 	uint32_t width, height;
+	uint32_t ShadowWidth, ShadowHeight;
 
 };
 

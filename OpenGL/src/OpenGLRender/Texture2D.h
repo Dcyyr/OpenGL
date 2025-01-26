@@ -17,6 +17,6 @@ public:
 
 private:
 	uint32_t m_Width, m_Height;
-	uint32_t m_RendererID;
+	uint32_t m_RendererID = 0;
 	std::string m_Filepath;
 };

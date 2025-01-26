@@ -1,6 +1,5 @@
 #include "Camera.h"
 
-
 Camera::Camera(const glm::vec3& position, const glm::vec3& up, float yaw, float pitch)
 	:m_Front(glm::vec3(0.0f,0.0f,-1.0f)),m_MoveSpeed(c_Speed),m_MouseSensitivity(c_Sensitivty),m_Zoom(c_Zoom)
 {
@@ -26,7 +25,7 @@ const glm::mat4 Camera::GetViewMatrix() const
 	return glm::lookAt(m_Position, m_Position + m_Front, m_Up);
 }
 
-void Camera::CameraInput(CameraMoveDirection direction, float ts)
+void Camera::CameraInput(CameraMoveDirection direction, Timestep ts)
 {
 	float Speed = m_MoveSpeed * ts;
 	if (direction == CameraMoveDirection::FORWARD)

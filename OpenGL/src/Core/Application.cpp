@@ -8,25 +8,25 @@
 #include <map>
 #include <imgui.h>
 
+//#include "Core/WindowsInput.cpp"
+#include "Core/Timestep.h"
+//#include "OpenGLRender/CameraController.h"
 #include "OpenGLRender/Buffers.h"
 #include "OpenGLRender/Shader.h"
 #include "OpenGLRender/Texture2D.h"
 #include "OpenGLRender/VertexArray.h"
-#include "OpenGLRender/Renderer.h"
+#include "OpenGLRender/RenderObjects.h"
 #include "OpenGLRender/Camera.h"
 #include "OpenGLRender/Model.h"
 #include "OpenGLRender/FrameBuffers.h"
 
 //#include "Core/WindowsInput.h"
-void KeyInput(GLFWwindow* window);
+void KeyInput(GLFWwindow* window,Timestep ts);
 void MouseCallback(GLFWwindow* window, double xpos, double ypos);
 void MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 uint32_t loadCubeMap(std::vector<std::string> faces);
 
 Camera camera(glm::vec3(0.0f, 3.0f, 15.0f));
-// timing
-float deltaTime = 0.0f;	// time between current frame and last frame
-float lastFrame = 0.0f;
 
 const uint32_t width = 1600;
 const uint32_t height = 900;
@@ -41,6 +41,7 @@ bool blinnKeyPressed = false;
 
 bool GammaEnabled = false;
 bool GammaKeyPressed = false;
+
 
 int main()
 {
@@ -73,101 +74,120 @@ int main()
     }
 
     Renderer render;
-
-
     glEnable(GL_DEPTH_TEST);//启用深度测试
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glEnable(GL_FRAMEBUFFER_SRGB);
     
-    float planeVertices[] = {
-        // positions            // normals         // texcoords
-         10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
-        -10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
-        -10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
+    //glEnable(GL_FRAMEBUFFER_SRGB);
+ 
+    //setup shader
+    Shader ShadowMappingShader("res/shader/Advance_Lighting/ShadowMapping/ShadowMapping.shader");
+    Shader ShadowMappingDepthShader("res/shader/Advance_Lighting/ShadowMapping/ShadowMappingDepth.shader");
+    Shader QuadShader("res/shader/Advance_Lighting/ShadowMapping/Quad.shader");
 
-         10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
-        -10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
-         10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,  10.0f, 10.0f
-    };
-
-    Shader LightShader("res/shader/Advance_Lighting/GammaCorrection.shader");
-    //plane
-    VertexArray planeVa;
-    planeVa.Bind();
-    VertexBuffer planeVb(planeVertices, sizeof(planeVertices));
-
-    VertexBufferLayout layout;
-    layout.Push<float>(3);
-    planeVa.AddVertexBuffer(planeVb, layout);
-    layout.Push<float>(3);
-    planeVa.AddVertexBuffer(planeVb, layout);
-    layout.Push<float>(2);
-    planeVa.AddVertexBuffer(planeVb, layout);
-    planeVa.Unbind();
+    //setup texture
+    Texture2D WoodTexture("res/texture/wood.png");
+    //Texture2D gammatexture("res/texture/wood.png");
 
 
-    Texture2D texture1("res/texture/wood.png");
-    Texture2D gammatexture("res/texture/wood.png");
+    //配置深度图帧缓冲
+    const uint32_t ShadowWidth = 1024, ShadowHeight = 1024;
+    uint32_t depthMapFB;
+    glCreateFramebuffers(1, &depthMapFB);
+    //创建深度纹理
+    uint32_t depthMap;
+    glCreateTextures(GL_TEXTURE_2D, 1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, ShadowWidth, ShadowHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTextureParameteri(depthMap, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTextureParameteri(depthMap, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    /*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
+    //我们宁可让所有超出深度贴图的坐标的深度范围是1.0，这样超出的坐标将永远不在阴影之中。我们可以储存一个边框颜色，
+    //然后把深度贴图的纹理环绕选项设置为GL_CLAMP_TO_BORDER：
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-    LightShader.Bind();
-    LightShader.SetUniformInt("texture1", 0);
+    //附加深度纹理作为帧缓冲的深度缓冲区
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFB);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    glm::vec3 lightPositions[] = 
-    {
-     glm::vec3(-3.0f, 0.0f, 0.0f),
-     glm::vec3(-1.0f, 0.0f, 0.0f),
-     glm::vec3(1.0f, 0.0f, 0.0f),
-     glm::vec3(3.0f, 0.0f, 0.0f)
-    };
+    ShadowMappingShader.Bind();
+    ShadowMappingShader.SetUniformInt("diffuseTexture", 0);
+    ShadowMappingShader.SetUniformInt("shadowMap", 1);
 
-    glm::vec3 lightColors[] = 
-    {
-        glm::vec3(0.25),
-        glm::vec3(0.50),
-        glm::vec3(0.75),
-        glm::vec3(1.00)
-    };
-   
+    QuadShader.Bind();
+    QuadShader.SetUniformInt("depthMap", 0);
+
+    glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
 
     while (!glfwWindowShouldClose(window))
     {
-    
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+        float currentFrame = (float)glfwGetTime();
+        float lastFrameTime = 0.0f;
+        Timestep timestep = currentFrame - lastFrameTime;
+        lastFrameTime = currentFrame;
 
-        KeyInput(window);
-
+        
+        KeyInput(window, timestep);
+        
        
         /* Render here */
         render.Clear();
 
-        LightShader.Bind();
+        
+        //将场景深度渲染为纹理（从光线的角度看）
+        glm::mat4 lightProjection, lightView;
+        glm::mat4 lightSpaceMatrix;
+        float NearPlane = 1.0f, FarPlane = 7.5f;
+        lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, NearPlane, FarPlane);
+        lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+        lightSpaceMatrix = lightProjection * lightView;
+        //从光线的角度渲染场景
+        ShadowMappingDepthShader.Bind();
+        ShadowMappingDepthShader.SetUniformMat4("lightSpaceMatrix", lightSpaceMatrix);
+
+        glViewport(0, 0, ShadowWidth, ShadowHeight);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFB);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        WoodTexture.Bind();
+        glCullFace(GL_FRONT);
+        render.RenderScene(ShadowMappingDepthShader);
+        glCullFace(GL_BACK);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glViewport(0, 0, width, height);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+        //使用生成的深度/阴影贴图将场景渲染为正常效果
+
+        ShadowMappingShader.Bind();
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        LightShader.SetUniformMat4("projection", projection);
-        LightShader.SetUniformMat4("view", view);
+        ShadowMappingShader.SetUniformMat4("projection", projection);
+        ShadowMappingShader.SetUniformMat4("view", view);
+        //设置light uniform
+        ShadowMappingShader.SetUniformFloat3("viewPos",camera.m_Position);
+        ShadowMappingShader.SetUniformFloat3("lightPos", lightPos);
+        ShadowMappingShader.SetUniformMat4("lightSpaceMatrix", lightSpaceMatrix);
+        WoodTexture.Bind();
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        render.RenderScene(ShadowMappingShader);
 
-        LightShader.SetUniformFloat3("viewPos",camera.m_Position);
-        glUniform3fv(glGetUniformLocation(LightShader.m_RendererID, "lightPositions"), 4, &lightPositions[0][0]);
-        glUniform3fv(glGetUniformLocation(LightShader.m_RendererID, "lightColors"), 4, &lightColors[0][0]);
-        LightShader.SetUniformInt("gamma", GammaEnabled);
 
-
-        planeVa.Bind();
-        if (GammaEnabled)
-        {
-            gammatexture.Bind();
-        }
-        else
-        {
-             texture1.Bind();
-        }
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        //std::cout << (blinn ? "BlinnPhong" : "Phong") << std::endl;
-        std::cout << (GammaEnabled ? "Gamma enabled" : "Gamma disabled") << std::endl;
+        //将深度图渲染为四边形，以便进行可视化调试
+        QuadShader.Bind();
+        QuadShader.SetUniformFloat("near_plane", NearPlane);
+        QuadShader.SetUniformFloat("far_plane", FarPlane);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINE线框，GL_FILL恢复默认
         /* Swap front and back buffers */
@@ -178,30 +198,30 @@ int main()
     }
    
 
-
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
 }
 
 
-void KeyInput(GLFWwindow* window)
+void KeyInput(GLFWwindow* window,Timestep ts)
 {
+
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, 1);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.CameraInput(CameraMoveDirection::FORWARD, deltaTime);
+        camera.CameraInput(CameraMoveDirection::FORWARD, ts);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.CameraInput(CameraMoveDirection::BACKWARD, deltaTime);
+        camera.CameraInput(CameraMoveDirection::BACKWARD, ts);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.CameraInput(CameraMoveDirection::LEFT, deltaTime);
+        camera.CameraInput(CameraMoveDirection::LEFT, ts);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.CameraInput(CameraMoveDirection::RIGHT, deltaTime);
+        camera.CameraInput(CameraMoveDirection::RIGHT, ts);
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        camera.CameraInput(CameraMoveDirection::UP, deltaTime);
+        camera.CameraInput(CameraMoveDirection::UP, ts);
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        camera.CameraInput(CameraMoveDirection::DOWN, deltaTime);
+        camera.CameraInput(CameraMoveDirection::DOWN, ts);
 
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && !blinnKeyPressed)
     {

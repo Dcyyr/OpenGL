@@ -3,6 +3,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "Core/Timestep.h"
 
 enum class CameraMoveDirection
 {
@@ -11,7 +12,7 @@ enum class CameraMoveDirection
 
 const float c_Yaw        = -90.0f;//Æ«º½½Ç
 const float c_Pitch      = 0.0f;//¸©Ñö½Ç
-const float c_Speed      = 2.5f;
+const float c_Speed      = 0.015f;
 const float c_Sensitivty = 0.03f;//ÁéÃô¶È
 const float c_Zoom       = 45.0f;
 
@@ -23,7 +24,7 @@ public:
 	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 	const glm::mat4 GetViewMatrix() const;
 
-	void CameraInput(CameraMoveDirection direction,float ts);
+	void CameraInput(CameraMoveDirection direction, Timestep ts);
 	void MouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
 	void MouseScroll(float yoffset);
 private:
