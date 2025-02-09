@@ -195,6 +195,12 @@ void Shader::SetUniformFloat4(const std::string& name, const glm::vec4& value)co
 	glUniform4f(location, value.x, value.y, value.z,value.w);
 }
 
+void Shader::SetUniformVec3(const std::string& name, const glm::vec3& value)const
+{
+	glUniform3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+
+}
+
 void Shader::SetUniformMat4(const std::string& name, const glm::mat4& matrix)const
 {
 	GLint location = glGetUniformLocation(m_RendererID, name.c_str());

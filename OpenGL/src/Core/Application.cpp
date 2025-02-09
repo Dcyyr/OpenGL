@@ -26,7 +26,7 @@ void MouseCallback(GLFWwindow* window, double xpos, double ypos);
 void MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 uint32_t loadCubeMap(std::vector<std::string> faces);
 
-Camera camera(glm::vec3(0.0f, 3.0f, 15.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
 const uint32_t width = 1600;
 const uint32_t height = 900;
@@ -42,12 +42,14 @@ bool blinnKeyPressed = false;
 bool GammaEnabled = false;
 bool GammaKeyPressed = false;
 
+bool shadows = true;
+
 
 int main()
 {
 
-    if (!glfwInit()) return -1;
-
+    if (!glfwInit()) 
+        return -1;
    
     GLFWwindow* window = glfwCreateWindow(1600, 900, "Hello World", NULL, NULL);
 
@@ -74,17 +76,18 @@ int main()
     }
 
     Renderer render;
+
     glEnable(GL_DEPTH_TEST);//启用深度测试
-    
+    glEnable(GL_CULL_FACE);
     //glEnable(GL_FRAMEBUFFER_SRGB);
  
     //setup shader
-    Shader ShadowMappingShader("res/shader/Advance_Lighting/ShadowMapping/ShadowMapping.shader");
-    Shader ShadowMappingDepthShader("res/shader/Advance_Lighting/ShadowMapping/ShadowMappingDepth.shader");
-    Shader QuadShader("res/shader/Advance_Lighting/ShadowMapping/Quad.shader");
+    Shader PointShadowShader("res/shader/Advance_Lighting/ShadowMapping/PointShadows.shader");
+    Shader PointShadowDepthShader("res/shader/Advance_Lighting/ShadowMapping/PointShadowsDepth.shader");
+    
 
     //setup texture
-    Texture2D WoodTexture("res/texture/wood.png");
+    Texture2D WoodTexture("res/texture/floor.jpg");
     //Texture2D gammatexture("res/texture/wood.png");
 
 
@@ -93,36 +96,31 @@ int main()
     uint32_t depthMapFB;
     glCreateFramebuffers(1, &depthMapFB);
     //创建深度纹理
-    uint32_t depthMap;
-    glCreateTextures(GL_TEXTURE_2D, 1, &depthMap);
-    glBindTexture(GL_TEXTURE_2D, depthMap);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, ShadowWidth, ShadowHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glTextureParameteri(depthMap, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTextureParameteri(depthMap, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    /*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
-    //我们宁可让所有超出深度贴图的坐标的深度范围是1.0，这样超出的坐标将永远不在阴影之中。我们可以储存一个边框颜色，
-    //然后把深度贴图的纹理环绕选项设置为GL_CLAMP_TO_BORDER：
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+    uint32_t depthCubeMap;
+    glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &depthCubeMap);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeMap);
 
+    for (uint32_t i = 0; i < 6; i++)
+    {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, ShadowWidth, ShadowHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     //附加深度纹理作为帧缓冲的深度缓冲区
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFB);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubeMap, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    ShadowMappingShader.Bind();
-    ShadowMappingShader.SetUniformInt("diffuseTexture", 0);
-    ShadowMappingShader.SetUniformInt("shadowMap", 1);
+    PointShadowShader.Bind();
+    PointShadowShader.SetUniformInt("diffuseTexture", 0);
+    PointShadowShader.SetUniformInt("depthMap", 1);
 
-    QuadShader.Bind();
-    QuadShader.SetUniformInt("depthMap", 0);
-
-    glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
+    glm::vec3 lightPos(0.0f,0.0f,0.0f);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -134,60 +132,60 @@ int main()
         
         KeyInput(window, timestep);
         
+        lightPos.z = static_cast<float>(sin(glfwGetTime() * 0.5)*3.0);
        
         /* Render here */
         render.Clear();
 
-        
-        //将场景深度渲染为纹理（从光线的角度看）
-        glm::mat4 lightProjection, lightView;
-        glm::mat4 lightSpaceMatrix;
-        float NearPlane = 1.0f, FarPlane = 7.5f;
-        lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, NearPlane, FarPlane);
-        lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-        lightSpaceMatrix = lightProjection * lightView;
-        //从光线的角度渲染场景
-        ShadowMappingDepthShader.Bind();
-        ShadowMappingDepthShader.SetUniformMat4("lightSpaceMatrix", lightSpaceMatrix);
+        //----------------------------------------------------------------------------
+        //创建深度立方体地图转换矩阵
+        float nearplane = 1.0f;
+        float farplane  = 25.0f;
+        glm::mat4 ShadowProj = glm::perspective(glm::radians(90.0f), (float)ShadowWidth / (float)ShadowHeight, nearplane, farplane);
+        std::vector<glm::mat4> shadowTransforms;
+        shadowTransforms.push_back(ShadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+        shadowTransforms.push_back(ShadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+        shadowTransforms.push_back(ShadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+        shadowTransforms.push_back(ShadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
+        shadowTransforms.push_back(ShadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+        shadowTransforms.push_back(ShadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 
+
+        //渲染场景
         glViewport(0, 0, ShadowWidth, ShadowHeight);
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFB);
         glClear(GL_DEPTH_BUFFER_BIT);
-        WoodTexture.Bind();
-        glCullFace(GL_FRONT);
-        render.RenderScene(ShadowMappingDepthShader);
-        glCullFace(GL_BACK);
 
+        PointShadowDepthShader.Bind();
+        for (uint32_t i = 0; i < 6; i++)
+        {
+            PointShadowDepthShader.SetUniformMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+        }
+
+        PointShadowDepthShader.SetUniformFloat("far_plane",farplane);
+        PointShadowDepthShader.SetUniformVec3("lightPos", lightPos);
+        render.RenderScene(PointShadowDepthShader);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+        // 正常渲染场景 
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-        //使用生成的深度/阴影贴图将场景渲染为正常效果
-
-        ShadowMappingShader.Bind();
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+        PointShadowShader.Bind();
+        glm::mat4 projection = glm::perspective(glm::radians(camera.m_Zoom), (float)width / (float)height, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        ShadowMappingShader.SetUniformMat4("projection", projection);
-        ShadowMappingShader.SetUniformMat4("view", view);
-        //设置light uniform
-        ShadowMappingShader.SetUniformFloat3("viewPos",camera.m_Position);
-        ShadowMappingShader.SetUniformFloat3("lightPos", lightPos);
-        ShadowMappingShader.SetUniformMat4("lightSpaceMatrix", lightSpaceMatrix);
+        PointShadowShader.SetUniformMat4("projection", projection);
+        PointShadowShader.SetUniformMat4("view", view);
+        //set light
+        PointShadowShader.SetUniformVec3("lightPos", lightPos);
+        PointShadowShader.SetUniformVec3("viewPos", camera.m_Position);
+        PointShadowShader.SetUniformInt("shadows", shadows);
+
+        PointShadowShader.SetUniformFloat("far_plane", farplane);
         WoodTexture.Bind();
+
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, depthMap);
-        render.RenderScene(ShadowMappingShader);
-
-
-        //将深度图渲染为四边形，以便进行可视化调试
-        QuadShader.Bind();
-        QuadShader.SetUniformFloat("near_plane", NearPlane);
-        QuadShader.SetUniformFloat("far_plane", FarPlane);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, depthMap);
-        
+        glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeMap);
+        render.RenderScene(PointShadowShader);
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINE线框，GL_FILL恢复默认
         /* Swap front and back buffers */

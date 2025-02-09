@@ -46,7 +46,7 @@ uniform vec3 viewPos;
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
     float bias = 0.005;
-   //进行透视除法
+   //进行透视除法，透视除法是将4D裁剪空间坐标变换为3D标准化设备坐标的过程。这一步会在每一个顶点着色器运行的最后被自动执行
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
 	//转换到 [0,1] 范围
 	projCoords = projCoords * 0.5 + 0.5;
