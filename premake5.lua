@@ -63,8 +63,8 @@ workspace "OpenGL"
 			"GLFW",
 			"GLAD",
 			"ImGui",
-			"opengl32.lib",
-			"assimp-vc143-mtd.lib"
+			"opengl32.lib"
+			
 		}
 
 		filter "system.windows"
