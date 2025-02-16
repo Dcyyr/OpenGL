@@ -78,49 +78,22 @@ int main()
     Renderer render;
 
     glEnable(GL_DEPTH_TEST);//启用深度测试
-    glEnable(GL_CULL_FACE);
+   
     //glEnable(GL_FRAMEBUFFER_SRGB);
  
     //setup shader
-    Shader PointShadowShader("res/shader/Advance_Lighting/ShadowMapping/PointShadows.shader");
-    Shader PointShadowDepthShader("res/shader/Advance_Lighting/ShadowMapping/PointShadowsDepth.shader");
-    
+    Shader Shader("res/shader/Advance_Lighting/NormalMapping.shader");
 
     //setup texture
-    Texture2D WoodTexture("res/texture/floor.jpg");
-    //Texture2D gammatexture("res/texture/wood.png");
+    Texture2D Texture("res/texture/brickwall.jpg");
+    Texture2D NormalTexture("res/texture/brickwall_normal.jpg");
 
 
-    //配置深度图帧缓冲
-    const uint32_t ShadowWidth = 1024, ShadowHeight = 1024;
-    uint32_t depthMapFB;
-    glCreateFramebuffers(1, &depthMapFB);
-    //创建深度纹理
-    uint32_t depthCubeMap;
-    glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &depthCubeMap);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeMap);
+    Shader.Bind();
+    Shader.SetUniformInt("u_DiffuseMap", 0);
+    Shader.SetUniformInt("u_NormalMap", 1);
 
-    for (uint32_t i = 0; i < 6; i++)
-    {
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, ShadowWidth, ShadowHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    //附加深度纹理作为帧缓冲的深度缓冲区
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFB);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubeMap, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    PointShadowShader.Bind();
-    PointShadowShader.SetUniformInt("diffuseTexture", 0);
-    PointShadowShader.SetUniformInt("depthMap", 1);
-
-    glm::vec3 lightPos(0.0f,0.0f,0.0f);
+    glm::vec3 lightPos(0.5f, 1.0f, 0.3f);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -132,65 +105,37 @@ int main()
         
         KeyInput(window, timestep);
         
-        lightPos.z = static_cast<float>(sin(glfwGetTime() * 0.5)*3.0);
        
         /* Render here */
         render.Clear();
 
         //----------------------------------------------------------------------------
-        //创建深度立方体地图转换矩阵
-        float nearplane = 1.0f;
-        float farplane  = 25.0f;
-        glm::mat4 ShadowProj = glm::perspective(glm::radians(90.0f), (float)ShadowWidth / (float)ShadowHeight, nearplane, farplane);
-        std::vector<glm::mat4> shadowTransforms;
-        shadowTransforms.push_back(ShadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-        shadowTransforms.push_back(ShadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-        shadowTransforms.push_back(ShadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-        shadowTransforms.push_back(ShadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
-        shadowTransforms.push_back(ShadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-        shadowTransforms.push_back(ShadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-
-
-        //渲染场景
-        glViewport(0, 0, ShadowWidth, ShadowHeight);
-        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFB);
-        glClear(GL_DEPTH_BUFFER_BIT);
-
-        PointShadowDepthShader.Bind();
-        for (uint32_t i = 0; i < 6; i++)
-        {
-            PointShadowDepthShader.SetUniformMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
-        }
-
-        PointShadowDepthShader.SetUniformFloat("far_plane",farplane);
-        PointShadowDepthShader.SetUniformVec3("lightPos", lightPos);
-        render.RenderScene(PointShadowDepthShader);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        // 正常渲染场景 
-        glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        PointShadowShader.Bind();
         glm::mat4 projection = glm::perspective(glm::radians(camera.m_Zoom), (float)width / (float)height, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        PointShadowShader.SetUniformMat4("projection", projection);
-        PointShadowShader.SetUniformMat4("view", view);
-        //set light
-        PointShadowShader.SetUniformVec3("lightPos", lightPos);
-        PointShadowShader.SetUniformVec3("viewPos", camera.m_Position);
-        PointShadowShader.SetUniformInt("shadows", shadows);
+        Shader.Bind();
+        Shader.SetUniformMat4("projection", projection);
+        Shader.SetUniformMat4("view", view);
 
-        PointShadowShader.SetUniformFloat("far_plane", farplane);
-        WoodTexture.Bind();
+        //渲染法线贴图 quad
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians((float)glfwGetTime() * -10.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 1.0f)));
+        Shader.SetUniformMat4("model", model);
+        Shader.SetUniformFloat3("viewPos", camera.m_Position);
+        Shader.SetUniformFloat3("lightPos", lightPos);
+        //
+        Texture.Bind();
+        NormalTexture.Bind(1);
+        render.RenderQuad();
 
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeMap);
-        render.RenderScene(PointShadowShader);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.1f));
+        Shader.SetUniformMat4("model", model);
+        render.RenderQuad();
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINE线框，GL_FILL恢复默认
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
-
         /* Poll for and process events */
         glfwPollEvents();
     }
