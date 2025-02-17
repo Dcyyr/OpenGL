@@ -90,7 +90,7 @@ void Renderer::RenderCube()
 
         glCreateVertexArrays(1, &m_CubeVa);
         VertexBuffer CubeVb(vertices, sizeof(vertices));
-       
+
         glBindVertexArray(m_CubeVa);
 
         glEnableVertexAttribArray(0);
@@ -109,34 +109,6 @@ void Renderer::RenderCube()
 }
 
 void Renderer::RenderQuad()
-{
-    if (m_QuadVa == 0)
-    {
-        float quadVertices[] = {
-            // positions        // texture Coords
-            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-        };
-
-        glCreateVertexArrays(1, &m_QuadVa);
-        glBindVertexArray(m_QuadVa);
-        VertexBuffer QuadVb(quadVertices, sizeof(quadVertices));
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-
-        
-    }
-
-    glBindVertexArray(m_QuadVa);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glBindVertexArray(0);
-}
-
-void Renderer::RenderPlane()
 {
     if (m_QuadVa == 0)
     {
@@ -224,16 +196,49 @@ void Renderer::RenderPlane()
     glBindVertexArray(0);
 }
 
+void Renderer::RenderPlane()
+{
+    if (m_PlaneVa == 0)
+    {
+        float planeVertices[] = {
+            // positions            // normals         // texcoords
+             25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
+            -25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
+            -25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
+
+             25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
+            -25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
+             25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,  25.0f, 25.0f
+        };
+
+
+        glGenVertexArrays(1, &m_PlaneVa);
+        VertexBuffer planeVb(planeVertices, sizeof(planeVertices));
+        glBindVertexArray(m_PlaneVa);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glBindVertexArray(0);
+    }
+
+    glBindVertexArray(m_PlaneVa);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+}
+
 void Renderer::Draw(const VertexBuffer& vb, const IndexBuffer& ib, const Shader& shader)const
 {
-	vb.Bind();
-	ib.Bind();
-	shader.Bind();
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+    vb.Bind();
+    ib.Bind();
+    shader.Bind();
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
 void Renderer::Clear() const
 {
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
