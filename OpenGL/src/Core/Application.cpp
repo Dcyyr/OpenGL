@@ -43,6 +43,7 @@ bool GammaEnabled = false;
 bool GammaKeyPressed = false;
 
 bool shadows = true;
+float heightScale = 0.1f;
 
 
 int main()
@@ -82,16 +83,17 @@ int main()
     //glEnable(GL_FRAMEBUFFER_SRGB);
  
     //setup shader
-    Shader Shader("res/shader/Advance_Lighting/NormalMapping.shader");
+    Shader shader("res/shader/Advance_Lighting/ParallaxMapping.shader");
 
     //setup texture
-    Texture2D Texture("res/texture/brickwall.jpg");
-    Texture2D NormalTexture("res/texture/brickwall_normal.jpg");
+    Texture2D Texture("res/texture/bricks2.jpg");
+    Texture2D Texture1("res/texture/bricks2_normal.jpg");
+    Texture2D Texture2("res/texture/bricks2_disp.jpg");
 
-
-    Shader.Bind();
-    Shader.SetUniformInt("u_DiffuseMap", 0);
-    Shader.SetUniformInt("u_NormalMap", 1);
+    shader.Bind();
+    shader.SetUniformInt("diffuseMap", 0);
+    shader.SetUniformInt("normalMap", 1);
+    shader.SetUniformInt("depthMap", 2);
 
     glm::vec3 lightPos(0.5f, 1.0f, 0.3f);
 
@@ -108,29 +110,24 @@ int main()
        
         /* Render here */
         render.Clear();
+        shader.Bind();
 
-        //----------------------------------------------------------------------------
-        glm::mat4 projection = glm::perspective(glm::radians(camera.m_Zoom), (float)width / (float)height, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        Shader.Bind();
-        Shader.SetUniformMat4("projection", projection);
-        Shader.SetUniformMat4("view", view);
+        glm::mat4 projection = glm::perspective(camera.m_Zoom, (float)width / (float)height, 0.1f, 100.0f);
+        shader.SetUniformMat4("view", view);
+        shader.SetUniformMat4("projection", projection);
 
-        //äÖÈ¾·¨ÏßÌùÍ¼ quad
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians((float)glfwGetTime() * -10.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 1.0f)));
-        Shader.SetUniformMat4("model", model);
-        Shader.SetUniformFloat3("viewPos", camera.m_Position);
-        Shader.SetUniformFloat3("lightPos", lightPos);
-        //
+
+        glm::mat4 model = glm::mat4(1.0);
+        model = glm::rotate(model, (float)glfwGetTime() * -10, glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
+        shader.SetUniformMat4("model", model);
+        shader.SetUniformVec3("lightPos", lightPos);
+        shader.SetUniformVec3("viewPos", camera.m_Position);
+        shader.SetUniformFloat("heightScale", heightScale);
+
         Texture.Bind();
-        NormalTexture.Bind(1);
-        render.RenderQuad();
-
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.1f));
-        Shader.SetUniformMat4("model", model);
+        Texture1.Bind(1);
+        Texture2.Bind(2);
         render.RenderQuad();
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_LINEÏß¿ò£¬GL_FILL»Ö¸´Ä¬ÈÏ

@@ -21,13 +21,28 @@
     <ClInclude Include="src\Core\Debug.h">
       <Filter>src\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Core\Timestep.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\WindowsInput.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\OpenGLRender\Buffers.h">
       <Filter>src\OpenGLRender</Filter>
     </ClInclude>
     <ClInclude Include="src\OpenGLRender\Camera.h">
       <Filter>src\OpenGLRender</Filter>
     </ClInclude>
-    <ClInclude Include="src\OpenGLRender\Renderer.h">
+    <ClInclude Include="src\OpenGLRender\FrameBuffers.h">
+      <Filter>src\OpenGLRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OpenGLRender\Mesh.h">
+      <Filter>src\OpenGLRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OpenGLRender\Model.h">
+      <Filter>src\OpenGLRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OpenGLRender\RenderObjects.h">
       <Filter>src\OpenGLRender</Filter>
     </ClInclude>
     <ClInclude Include="src\OpenGLRender\Shader.h">
@@ -45,9 +60,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\OpenGLRender\Mesh.h" />
-    <ClInclude Include="src\OpenGLRender\Model.h" />
-    <ClInclude Include="src\OpenGLRender\FrameBuffers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -62,7 +74,16 @@
     <ClCompile Include="src\OpenGLRender\Camera.cpp">
       <Filter>src\OpenGLRender</Filter>
     </ClCompile>
-    <ClCompile Include="src\OpenGLRender\Renderer.cpp">
+    <ClCompile Include="src\OpenGLRender\FrameBuffers.cpp">
+      <Filter>src\OpenGLRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OpenGLRender\Mesh.cpp">
+      <Filter>src\OpenGLRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OpenGLRender\Model.cpp">
+      <Filter>src\OpenGLRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OpenGLRender\RenderObjects.cpp">
       <Filter>src\OpenGLRender</Filter>
     </ClCompile>
     <ClCompile Include="src\OpenGLRender\Shader.cpp">
@@ -77,27 +98,8 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\OpenGLRender\Mesh.cpp" />
-    <ClCompile Include="src\OpenGLRender\FrameBuffers.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shader\Model.shader" />
-    <None Include="packages.config" />
-    <None Include="res\shader\StencilTest.shader" />
-    <None Include="res\shader\StencilSingleColor.shader" />
-    <None Include="res\shader\blending.shader" />
-    <None Include="res\shader\FrameBuffers.shader" />
-    <None Include="res\shader\FrameBufferScene.shader" />
-    <None Include="res\shader\SkyBox.shader" />
-    <None Include="res\shader\CubeMapping.shader" />
-    <None Include="res\shader\Advance_glsl\Red.shader" />
-    <None Include="res\shader\Advance_glsl\Green.shader" />
-    <None Include="res\shader\Advance_glsl\Blue.shader" />
-    <None Include="res\shader\Advance_glsl\Yellow.shader" />
-    <None Include="res\shader\Advance_glsl\Geometry.shader" />
-    <None Include="res\shader\Planet.shader" />
-    <None Include="res\shader\Asteroid.shader" />
-    <None Include="res\shader\Advance_Lighting\BlinnPhong.shader" />
-    <None Include="res\shader\Advance_Lighting\GammaCorrection.shader" />
+    <None Include="res\shader\Advance_Lighting\ParallaxMapping.shader" />
   </ItemGroup>
 </Project>
